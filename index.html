@@ -119,11 +119,7 @@ header h1{font-size:1rem;font-weight:800;}header h1 span{color:var(--accent);}
 .tbl tr:hover td{background:var(--surface2);}
 .ox{overflow-x:auto;}
 
-/* MAP */
-#wmap{width:100%;height:300px;position:relative;background:var(--surface2);border-radius:8px;overflow:hidden;margin-bottom:6px;}
-#wmap svg{width:100%;height:100%;}
-.mtt{position:fixed;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:7px 11px;font-size:.78rem;pointer-events:none;z-index:999;display:none;box-shadow:var(--shadow);}
-.mtt strong{display:block;font-weight:700;margin-bottom:2px;}
+
 
 /* SECTION HEADING */
 .sh{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;font-weight:700;margin:18px 0 10px;}
@@ -260,12 +256,6 @@ header h1{font-size:1rem;font-weight:800;}header h1 span{color:var(--accent);}
       </div>
 
       <div class="sh">Users by Country <span style="font-weight:400;text-transform:none;letter-spacing:0">(GA4 — all time)</span></div>
-      <div class="box mb">
-        <h3>World Map</h3>
-        <div id="wmap"><div class="ld"><div class="sp"></div><span>Loading map...</span></div></div>
-        <div class="mtt" id="mtt"></div>
-      </div>
-
       <div class="box">
         <h3>Country Details — <span style="font-weight:500;text-transform:none;letter-spacing:0">click headers to sort</span></h3>
         <div class="ox">
@@ -357,7 +347,7 @@ async function loadAll() {
     applyFilter(); // this sets ROWS and renders overview + design + books
   }
   if (EV && !EV.error) renderEmailFunnel();
-  if (GA && !GA.error) { renderGA4Cards(); renderCountryTable(); renderMap(); renderChannelBars(); renderChannelChart(); renderReturning(); }
+  if (GA && !GA.error) { renderGA4Cards(); renderCountryTable(); renderChannelBars(); renderChannelChart(); renderReturning(); }
 }
 
 // ============================================================ FILTERING
@@ -453,7 +443,13 @@ function renderCards() {
     {
       l: 'Sessions',
       v: fmt(dedupedTotal), c: 'a',
-      sub: fmt(rawTotal) + ' raw · ' + fmt(removedTotal) + ' dupes removed'
+      sub: (() => {
+        const downloads = EV ? (EV.ss_download || 0) : 0;
+        const dupePct = downloads > 0 ? ((downloads - dedupedTotal) / downloads * 100).toFixed(1) : 0;
+        return downloads > 0
+          ? fmt(downloads) + ' raw downloads · ' + dupePct + '% deduped'
+          : fmt(rawTotal) + ' raw · ' + fmt(removedTotal) + ' dupes removed';
+      })()
     },
     {
       l: 'Pages Read',
