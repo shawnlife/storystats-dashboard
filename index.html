@@ -91,7 +91,7 @@ header h1{font-size:1rem;font-weight:800;}header h1 span{color:var(--accent);}
 .g21{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px;}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;}
-.ga{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:14px;}
+.ga{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:14px;}
 .mb{margin-bottom:14px;}
 
 /* TOGGLE */
@@ -241,6 +241,7 @@ header h1{font-size:1rem;font-weight:800;}header h1 span{color:var(--accent);}
 
     <!-- AUDIENCE -->
     <div class="pane" id="tab-audience">
+      <p style="font-size:.8rem;color:var(--muted);font-weight:600;margin-bottom:14px;padding:9px 13px;background:var(--surface2);border-radius:7px;border:1px solid var(--border)">📊 Audience data is from GA4 (all-time). The period filter does not apply to this tab.</p>
       <div class="cards" id="ga4-cards"><div class="ld"><div class="sp"></div></div></div>
 
       <div class="sh">Traffic Sources <span style="font-weight:400;text-transform:none;letter-spacing:0">(GA4 — all time)</span></div>
@@ -252,7 +253,7 @@ header h1{font-size:1rem;font-weight:800;}header h1 span{color:var(--accent);}
         <div class="box">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:13px">
             <h3 style="margin-bottom:0">Channel Engagement Rate</h3>
-            <span class="tip-label" title="Engagement rate = % of sessions lasting 10+ seconds, having a conversion, or viewing 2+ pages. Higher = more meaningful visits.">?</span>
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);font-size:.65rem;color:var(--muted);cursor:help;font-weight:700" title="Engagement rate = % of sessions where the user was active for 10+ seconds, triggered a conversion event, or viewed 2+ pages. Higher means more meaningful visits from that channel.">?</span>
           </div>
           <div class="cw" style="height:200px"><canvas id="c-ch"></canvas></div>
         </div>
@@ -440,15 +441,45 @@ function calcStats(rows) {
 
 function renderCards() {
   const s = calcStats(ROWS);
+  const rawTotal = RAW ? RAW.rows.length : 0;
+  const dedupedTotal = s.totalSessions;
+  const removedTotal = rawTotal - dedupedTotal;
+  // Estimate books from pages (avg book ~300 pages)
+  const estBooks = Math.round(s.totalPages / 300);
+  // Days read
+  const totalDays = Math.round(s.totalHours / 24 * 10) / 10;
+
   const cards = [
-    {l:'Total Sessions',   v:fmt(s.totalSessions), c:'a', sub:'clean deduplicated sessions'},
-    {l:'Pages Read',       v:fmt(s.totalPages),    c:'b', sub:'across all sessions'},
-    {l:'Hours Read',       v:fmt(s.totalHours),    c:'g', sub:'total reading time'},
-    {l:'Books Finished',   v:fmt(s.booksFinished), c:'a', sub:'marked 100% complete'},
-    {l:'Avg Pages',        v:fmt(s.avgPages),      c:'t', sub:'mean per session'},
-    {l:'Median Pages',     v:fmt(s.medianPages),   c:'t', sub:'median per session'},
-    {l:'Avg Duration',     v:s.avgMins+' min',     c:'t', sub:'mean session length'},
-    {l:'Median Duration',  v:s.medianMins+' min',  c:'t', sub:'median session length'},
+    {
+      l: 'Sessions',
+      v: fmt(dedupedTotal), c: 'a',
+      sub: fmt(rawTotal) + ' raw · ' + fmt(removedTotal) + ' dupes removed'
+    },
+    {
+      l: 'Pages Read',
+      v: fmt(s.totalPages), c: 'b',
+      sub: '≈ ' + fmt(estBooks) + ' books (avg 300 pages)'
+    },
+    {
+      l: 'Time Reading',
+      v: fmt(s.totalHours) + ' hrs', c: 'g',
+      sub: totalDays + ' days of reading'
+    },
+    {
+      l: 'Books Finished',
+      v: fmt(s.booksFinished), c: 'a',
+      sub: 'marked 100% complete'
+    },
+    {
+      l: 'Avg / Median Pages',
+      v: fmt(s.avgPages), c: 't',
+      sub: 'median: ' + fmt(s.medianPages) + ' pages'
+    },
+    {
+      l: 'Avg / Median Duration',
+      v: s.avgMins + ' min', c: 't',
+      sub: 'median: ' + s.medianMins + ' min'
+    },
   ];
   document.getElementById('stat-cards').innerHTML = cards.map(c=>
     `<div class="card"><div class="cl">${c.l}</div><div class="cv ${c.c}">${c.v}</div><div class="cs">${c.sub}</div></div>`
@@ -641,27 +672,30 @@ function renderChannelChart() {
 
 // ============================================================ WORLD MAP
 // GA4 country names don't always match GeoJSON names -- map the known mismatches
+// Maps GA4 country names -> GeoJSON feature names
 const COUNTRY_NAME_MAP = {
-  'United States': 'United States of America',
-  'South Korea': 'South Korea',
-  'North Korea': 'North Korea',
-  'Tanzania': 'United Republic of Tanzania',
-  'Congo': 'Republic of the Congo',
-  'DR Congo': 'Democratic Republic of the Congo',
-  'Ivory Coast': "Côte d'Ivoire",
-  "Côte d'Ivoire": "Côte d'Ivoire",
-  'Czech Republic': 'Czech Republic',
-  'Czechia': 'Czech Republic',
-  'Bosnia & Herzegovina': 'Bosnia and Herzegovina',
-  'Trinidad & Tobago': 'Trinidad and Tobago',
-  'Türkiye': 'Turkey',
-  'Russia': 'Russia',
-  'Venezuela': 'Venezuela',
-  'Bolivia': 'Bolivia',
-  'Syria': 'Syria',
-  'Laos': 'Lao PDR',
-  'Myanmar': 'Myanmar',
-  'Vietnam': 'Vietnam',
+  'United States':          'United States of America',
+  'Türkiye':                'Turkey',
+  'Czechia':                'Czech Republic',
+  'Tanzania':               'United Republic of Tanzania',
+  'Bosnia & Herzegovina':   'Bosnia and Herzegovina',
+  'Trinidad & Tobago':      'Trinidad and Tobago',
+  'North Macedonia':        'Macedonia',
+  'Timor-Leste':            'East Timor',
+  'Congo':                  'Republic of the Congo',
+  'DR Congo':               'Democratic Republic of the Congo',
+  "Côte d'Ivoire":          "Côte d'Ivoire",
+  'Ivory Coast':            "Côte d'Ivoire",
+  'Laos':                   'Lao PDR',
+  'South Korea':            'South Korea',
+  'North Korea':            'North Korea',
+  'Russia':                 'Russia',
+  'Venezuela':              'Venezuela',
+  'Bolivia':                'Bolivia',
+  'Syria':                  'Syria',
+  'Myanmar':                'Myanmar',
+  'Vietnam':                'Vietnam',
+  'Dominican Republic':     'Dominican Republic',
 };
 
 async function renderMap() {
@@ -673,13 +707,13 @@ async function renderMap() {
     const r = await fetch('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson');
     const geo = await r.json();
 
-    // Build lookup: GeoJSON name -> user data
+    // Build lookup: both original GA4 name AND mapped GeoJSON name -> user data
     const ga4Lookup = {};
     GA.countries.forEach(c => {
-      const mapped = COUNTRY_NAME_MAP[c.country] || c.country;
-      ga4Lookup[mapped] = { users: parseInt(c.activeUsers)||0, eng: (parseFloat(c.engagementRate)*100).toFixed(1), time: fmtSecs(parseInt(c.avgEngagementTime)||0) };
-      // Also store under original name as fallback
-      ga4Lookup[c.country] = ga4Lookup[c.country] || ga4Lookup[mapped];
+      const data = { users: parseInt(c.activeUsers)||0, eng: (parseFloat(c.engagementRate)*100).toFixed(1), time: fmtSecs(parseInt(c.avgEngagementTime)||0) };
+      ga4Lookup[c.country] = data;                              // original GA4 name
+      const mapped = COUNTRY_NAME_MAP[c.country];
+      if (mapped) ga4Lookup[mapped] = data;                     // mapped GeoJSON name
     });
 
     const maxU = Math.max(...Object.values(ga4Lookup).map(d=>d.users));
@@ -836,16 +870,40 @@ function renderDesign() {
     if(os&&os!=='undefined'&&os!=='false'&&os!=='true') osCounts[os]=(osCounts[os]||0)+1;
   });
 
+  // Title entered vs not
+  const titleEntered    = ROWS.filter(r => String(r[C.HASTITLE]).toLowerCase()==='true').length;
+  const titleNotEntered = ROWS.length - titleEntered;
+  const bgUsed    = ROWS.filter(r => String(r[C.USEBG]).toLowerCase()==='true').length;
+  const bgNotUsed = ROWS.length - bgUsed;
+
   document.getElementById('design-grid').innerHTML = `
-    <div class="box"><h3>Ink Color</h3>${bars(inkCounts,'')}</div>
-    <div class="box"><h3>Cover Type</h3>${bars(coverCounts,'b')}</div>
-    <div class="box"><h3>OS Breakdown</h3>${bars(osCounts,'g')}</div>
+    <div class="box">
+      <h3>Ink Color</h3>${bars(inkCounts,'')}
+      <div style="height:16px"></div>
+      <h3>Cover Type</h3>${bars(coverCounts,'b')}
+      <div style="height:16px"></div>
+      <h3>Book Title Entered</h3>
+      <div class="cs2">
+        <div class="csp"><div class="cspn" style="color:var(--accent)">${fmt(titleEntered)}</div><div class="cspl">Entered (${pct(titleEntered,total)})</div></div>
+        <div class="csp"><div class="cspn" style="color:var(--muted)">${fmt(titleNotEntered)}</div><div class="cspl">Skipped (${pct(titleNotEntered,total)})</div></div>
+      </div>
+    </div>
+    <div class="box">
+      <h3>OS Breakdown</h3>${bars(osCounts,'g')}
+      <div style="height:16px"></div>
+      <h3>Background Used</h3>
+      <div class="cs2">
+        <div class="csp"><div class="cspn" style="color:var(--green)">${fmt(bgUsed)}</div><div class="cspl">Used (${pct(bgUsed,total)})</div></div>
+        <div class="csp"><div class="cspn" style="color:var(--muted)">${fmt(bgNotUsed)}</div><div class="cspl">Not Used (${pct(bgNotUsed,total)})</div></div>
+      </div>
+    </div>
     <div class="box">
       <h3>Custom 3rd Stat <span style="font-weight:400;text-transform:none;letter-spacing:0">(since launch)</span></h3>
       <div class="cs2">
         <div class="csp"><div class="cspn" style="color:var(--accent)">${fmt(customUsed)}</div><div class="cspl">Used (${pct(customUsed,customTotal)})</div></div>
         <div class="csp"><div class="cspn" style="color:var(--muted)">${fmt(customNotUsed)}</div><div class="cspl">Not Used (${pct(customNotUsed,customTotal)})</div></div>
       </div>
+      <div style="height:12px"></div>
       ${Object.keys(customStats).length ? bars(customStats,'y') : '<p style="color:var(--muted);font-size:.83rem">No labels yet</p>'}
     </div>`;
 }
