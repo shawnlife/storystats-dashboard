@@ -460,17 +460,19 @@ function renderEmailFunnel() {
   const shown   = EV.ss_email_modal_shown || 0;
   const signup  = EV.ss_email_signup      || 0;
   const skipped = EV.ss_email_skipped     || 0;
-  const optIn   = EV.ss_email_opted_in    || 0;
-  const optOut  = EV.ss_email_opted_out   || 0;
+  // opted in/out comes from the email capture sheet (column C), not GA4 parameters
+  const optIn   = EV.email_opted_in       || 0;
+  const optOut  = EV.email_opted_out      || 0;
+  const total   = EV.email_total          || (optIn + optOut);
   const steps = [
-    {n:fmt(shown),   l:'Saw Prompt',       p:'100%'},
-    {n:fmt(signup),  l:'Submitted Email',  p:pct(signup,shown)},
-    {n:fmt(skipped), l:'Skipped',          p:pct(skipped,shown)},
-    {n:fmt(optIn),   l:'Opted In',         p:pct(optIn,signup)},
-    {n:fmt(optOut),  l:'Opted Out',        p:pct(optOut,signup)},
+    {n:fmt(shown),   l:'Saw Prompt',      p:'100%',              sub:'modal displayed'},
+    {n:fmt(signup),  l:'Submitted Email', p:pct(signup,shown),   sub:'of those who saw it'},
+    {n:fmt(skipped), l:'Skipped',         p:pct(skipped,shown),  sub:'of those who saw it'},
+    {n:fmt(optIn),   l:'Opted In',        p:pct(optIn,total),    sub:'of emails submitted'},
+    {n:fmt(optOut),  l:'Opted Out',       p:pct(optOut,total),   sub:'of emails submitted'},
   ];
   document.getElementById('email-funnel').innerHTML = steps.map(s=>
-    `<div class="efs"><div class="efn">${s.n}</div><div class="efl">${s.l}</div><div class="efp">${s.p}</div></div>`
+    `<div class="efs"><div class="efn">${s.n}</div><div class="efl">${s.l}</div><div class="efp">${s.p}</div><div style="font-size:.67rem;color:var(--muted);margin-top:2px">${s.sub}</div></div>`
   ).join('');
 }
 
