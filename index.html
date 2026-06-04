@@ -7,42 +7,40 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg:#f5f5f0; --surface:#ffffff; --surface2:#f0ede8; --border:#e0dbd4;
-  --text:#364049; --muted:#7a8794; --accent:#d25343; --accent2:#b8392b;
-  --green:#2d8a5e; --yellow:#c47d0e; --blue:#2563a8; --purple:#6d28d9;
-  --shadow:0 1px 4px rgba(54,64,73,0.08); --r:10px;
+:root{
+  --bg:#f5f5f0;--surface:#fff;--surface2:#f0ede8;--border:#e0dbd4;
+  --text:#364049;--muted:#7a8794;--accent:#d25343;--accent2:#b8392b;
+  --green:#2d8a5e;--yellow:#c47d0e;--blue:#2563a8;--purple:#6d28d9;
+  --shadow:0 1px 4px rgba(54,64,73,.08);--r:10px;
 }
-[data-theme=dark] {
-  --bg:#1a1e24; --surface:#232830; --surface2:#2d3340; --border:#3a4150;
-  --text:#e8edf2; --muted:#7a8794; --accent:#d25343; --accent2:#e8705f;
-  --green:#4caf82; --yellow:#f0b429; --blue:#4a9eff; --purple:#a78bfa;
-  --shadow:0 1px 6px rgba(0,0,0,0.3);
+[data-theme=dark]{
+  --bg:#1a1e24;--surface:#232830;--surface2:#2d3340;--border:#3a4150;
+  --text:#e8edf2;--muted:#7a8794;--accent:#d25343;--accent2:#e8705f;
+  --green:#4caf82;--yellow:#f0b429;--blue:#4a9eff;--purple:#a78bfa;
+  --shadow:0 1px 6px rgba(0,0,0,.3);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);color:var(--text);font-family:'Mulish',system-ui,sans-serif;min-height:100vh;transition:background .2s,color .2s;}
 
 /* AUTH */
 #auth{display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:18px;}
-.auth-brand{display:flex;align-items:center;gap:10px;}
-.brand-icon{width:40px;height:40px;background:var(--accent);border-radius:9px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:1rem;}
-.auth-title{font-size:1.9rem;font-weight:800;}
-.auth-title span{color:var(--accent);}
+.ab{display:flex;align-items:center;gap:10px;}
+.ai{width:40px;height:40px;background:var(--accent);border-radius:9px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:1rem;}
+.at{font-size:1.9rem;font-weight:800;}.at span{color:var(--accent);}
 #auth p{color:var(--muted);font-size:.88rem;}
 #auth input{padding:12px 20px;border-radius:var(--r);border:1.5px solid var(--border);background:var(--surface);color:var(--text);font-size:1rem;width:280px;outline:none;text-align:center;font-family:inherit;transition:border-color .15s;}
 #auth input:focus{border-color:var(--accent);}
-#auth button{padding:12px 32px;background:var(--accent);color:#fff;border:none;border-radius:var(--r);font-size:1rem;cursor:pointer;font-family:inherit;font-weight:700;transition:background .15s;}
+#auth button{padding:12px 32px;background:var(--accent);color:#fff;border:none;border-radius:var(--r);font-size:1rem;cursor:pointer;font-family:inherit;font-weight:700;}
 #auth button:hover{background:var(--accent2);}
 #auth-err{color:var(--accent);font-size:.84rem;display:none;}
 
 /* SHELL */
 #main{display:none;}
 header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:54px;position:sticky;top:0;z-index:200;box-shadow:var(--shadow);}
-.h-left{display:flex;align-items:center;gap:10px;}
-.h-icon{width:26px;height:26px;background:var(--accent);border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.72rem;flex-shrink:0;}
-header h1{font-size:1rem;font-weight:800;}
-header h1 span{color:var(--accent);}
-.h-right{display:flex;align-items:center;gap:7px;}
+.hl{display:flex;align-items:center;gap:10px;}
+.hi{width:26px;height:26px;background:var(--accent);border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.72rem;}
+header h1{font-size:1rem;font-weight:800;}header h1 span{color:var(--accent);}
+.hr{display:flex;align-items:center;gap:7px;}
 .upd{color:var(--muted);font-size:.76rem;margin-right:4px;}
 .btn{padding:6px 13px;border-radius:7px;cursor:pointer;font-size:.8rem;border:none;font-family:inherit;font-weight:700;transition:background .15s,border-color .15s;}
 .btn-o{background:var(--surface2);border:1px solid var(--border);color:var(--text);}
@@ -50,7 +48,6 @@ header h1 span{color:var(--accent);}
 .btn-p{background:var(--accent);color:#fff;}
 .btn-p:hover{background:var(--accent2);}
 .btn-sq{width:30px;height:30px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:7px;background:var(--surface2);border:1px solid var(--border);cursor:pointer;font-size:.95rem;transition:border-color .15s;}
-.btn-sq:hover{border-color:var(--accent);}
 
 /* FILTERS */
 .filters{padding:9px 28px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
@@ -66,96 +63,104 @@ header h1 span{color:var(--accent);}
 .tab{padding:9px 17px;background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:.86rem;font-family:inherit;font-weight:700;border-bottom:2px solid transparent;margin-bottom:-2px;transition:color .15s;}
 .tab.on{color:var(--accent);border-bottom-color:var(--accent);}
 .tab:hover:not(.on){color:var(--text);}
-.pane{display:none;}
-.pane.on{display:block;}
+.pane{display:none;}.pane.on{display:block;}
 
 /* CARDS */
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:13px;margin-bottom:22px;}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:13px;margin-bottom:22px;}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;box-shadow:var(--shadow);transition:border-color .15s,transform .15s;}
 .card:hover{border-color:var(--accent);transform:translateY(-1px);}
-.clabel{color:var(--muted);font-size:.7rem;text-transform:uppercase;letter-spacing:.8px;font-weight:700;margin-bottom:8px;}
-.cval{font-size:1.75rem;font-weight:800;line-height:1;}
-.cval.a{color:var(--accent);} .cval.g{color:var(--green);} .cval.b{color:var(--blue);}
-.cval.y{color:var(--yellow);} .cval.t{color:var(--text);} .cval.p{color:var(--purple);}
-.csub{color:var(--muted);font-size:.72rem;margin-top:5px;font-weight:500;}
-
-/* SECTION HEADING */
-.sh{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;font-weight:700;margin:18px 0 10px;}
+.cl{color:var(--muted);font-size:.7rem;text-transform:uppercase;letter-spacing:.8px;font-weight:700;margin-bottom:8px;}
+.cv{font-size:1.7rem;font-weight:800;line-height:1;}
+.cv.a{color:var(--accent);}.cv.g{color:var(--green);}.cv.b{color:var(--blue);}
+.cv.y{color:var(--yellow);}.cv.t{color:var(--text);}.cv.p{color:var(--purple);}
+.cs{color:var(--muted);font-size:.71rem;margin-top:5px;font-weight:500;}
 
 /* BOX */
 .box{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:17px;box-shadow:var(--shadow);}
 .box h3{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;font-weight:700;margin-bottom:13px;}
 .cw{position:relative;}
 
+/* EMAIL FUNNEL */
+.ef{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px;}
+.efs{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;text-align:center;box-shadow:var(--shadow);}
+.efn{font-size:1.5rem;font-weight:800;color:var(--accent);}
+.efl{font-size:.68rem;color:var(--muted);margin-top:3px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
+.efp{font-size:.8rem;font-weight:700;margin-top:3px;color:var(--text);}
+
 /* GRIDS */
 .g21{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px;}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;}
 .ga{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:14px;}
+.mb{margin-bottom:14px;}
 
-/* TOGGLE BUTTONS */
-.toggle-grp{display:flex;gap:0;background:var(--surface2);border:1px solid var(--border);border-radius:7px;overflow:hidden;width:fit-content;margin-bottom:13px;}
-.toggle-grp button{padding:5px 14px;background:transparent;border:none;font-family:inherit;font-size:.78rem;font-weight:700;cursor:pointer;color:var(--muted);transition:background .15s,color .15s;}
-.toggle-grp button.on{background:var(--accent);color:#fff;}
+/* TOGGLE */
+.tgg{display:flex;gap:0;background:var(--surface2);border:1px solid var(--border);border-radius:7px;overflow:hidden;width:fit-content;margin-bottom:12px;}
+.tgg button{padding:5px 14px;background:transparent;border:none;font-family:inherit;font-size:.78rem;font-weight:700;cursor:pointer;color:var(--muted);transition:background .15s,color .15s;}
+.tgg button.on{background:var(--accent);color:#fff;}
 
 /* BAR LIST */
 .bl{display:flex;flex-direction:column;gap:8px;}
 .bi{display:flex;flex-direction:column;gap:3px;}
 .br{display:flex;justify-content:space-between;align-items:center;}
-.blabel{font-size:.83rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px;}
-.bcount{font-size:.76rem;color:var(--muted);font-weight:500;flex-shrink:0;}
-.btrack{height:5px;background:var(--surface2);border-radius:3px;}
-.bfill{height:100%;border-radius:3px;background:var(--accent);transition:width .5s;}
-.bfill.b{background:var(--blue);} .bfill.g{background:var(--green);} .bfill.y{background:var(--yellow);}
+.blb{font-size:.83rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px;}
+.brc{font-size:.76rem;color:var(--muted);font-weight:500;flex-shrink:0;}
+.bt{height:5px;background:var(--surface2);border-radius:3px;}
+.bf{height:100%;border-radius:3px;background:var(--accent);transition:width .4s;}
+.bf.b{background:var(--blue);}.bf.g{background:var(--green);}.bf.y{background:var(--yellow);}
 
 /* TABLE */
 .tbl{width:100%;border-collapse:collapse;font-size:.82rem;}
-.tbl th{color:var(--muted);font-weight:700;text-align:left;padding:7px 9px;border-bottom:1px solid var(--border);white-space:nowrap;font-size:.72rem;text-transform:uppercase;letter-spacing:.4px;cursor:pointer;user-select:none;}
+.tbl th{color:var(--muted);font-weight:700;text-align:left;padding:7px 9px;border-bottom:1px solid var(--border);white-space:nowrap;font-size:.71rem;text-transform:uppercase;letter-spacing:.4px;cursor:pointer;user-select:none;}
 .tbl th:hover{color:var(--accent);}
-.tbl th .sort-arrow{margin-left:3px;opacity:.5;}
-.tbl th.sorted .sort-arrow{opacity:1;color:var(--accent);}
+.tbl th.srt .sa{color:var(--accent);opacity:1;}
 .tbl td{padding:7px 9px;border-bottom:1px solid var(--border);font-weight:500;}
 .tbl tr:last-child td{border-bottom:none;}
 .tbl tr:hover td{background:var(--surface2);}
 .ox{overflow-x:auto;}
 
-/* EMAIL SECTION */
-.email-funnel{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:6px;}
-.ef-step{background:var(--surface2);border-radius:8px;padding:13px;text-align:center;border:1px solid var(--border);}
-.ef-num{font-size:1.5rem;font-weight:800;color:var(--accent);}
-.ef-label{font-size:.72rem;color:var(--muted);margin-top:4px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
-.ef-pct{font-size:.8rem;color:var(--text);margin-top:3px;font-weight:700;}
-
 /* MAP */
-#world-map{width:100%;height:320px;background:var(--surface2);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.85rem;margin-bottom:14px;overflow:hidden;}
-#world-map svg{width:100%;height:100%;}
-.map-tooltip{position:fixed;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:7px 11px;font-size:.78rem;pointer-events:none;z-index:999;display:none;box-shadow:var(--shadow);}
-.map-tooltip strong{display:block;font-weight:700;margin-bottom:2px;}
+#wmap{width:100%;height:300px;position:relative;background:var(--surface2);border-radius:8px;overflow:hidden;margin-bottom:6px;}
+#wmap svg{width:100%;height:100%;}
+.mtt{position:fixed;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:7px 11px;font-size:.78rem;pointer-events:none;z-index:999;display:none;box-shadow:var(--shadow);}
+.mtt strong{display:block;font-weight:700;margin-bottom:2px;}
+
+/* SECTION HEADING */
+.sh{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;font-weight:700;margin:18px 0 10px;}
+
+/* CUSTOM STAT SPLIT */
+.cs2{display:flex;gap:8px;margin-bottom:12px;}
+.csp{flex:1;background:var(--surface2);border-radius:8px;padding:11px;text-align:center;border:1px solid var(--border);}
+.cspn{font-size:1.35rem;font-weight:800;}
+.cspl{font-size:.69rem;color:var(--muted);margin-top:3px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
 
 /* BOOKS */
-.book-highlight{background:linear-gradient(135deg,rgba(210,83,67,.08),rgba(37,99,168,.06));border:1px solid rgba(210,83,67,.2);border-radius:8px;padding:13px;margin-bottom:14px;}
-.book-highlight h4{font-size:.72rem;text-transform:uppercase;letter-spacing:.7px;font-weight:700;color:var(--accent);margin-bottom:10px;}
+.bhl{background:linear-gradient(135deg,rgba(210,83,67,.07),rgba(37,99,168,.05));border:1px solid rgba(210,83,67,.18);border-radius:9px;padding:14px;margin-bottom:14px;}
+.bhl h4{font-size:.7rem;text-transform:uppercase;letter-spacing:.7px;font-weight:700;color:var(--accent);margin-bottom:11px;}
+.ball{display:flex;flex-wrap:wrap;gap:7px;padding:4px 0;}
+.btag{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:.78rem;font-weight:600;color:var(--text);}
 
 /* LOADING */
-.ld{display:flex;align-items:center;justify-content:center;min-height:140px;color:var(--muted);flex-direction:column;gap:9px;}
+.ld{display:flex;align-items:center;justify-content:center;min-height:120px;color:var(--muted);flex-direction:column;gap:9px;}
 .sp{width:24px;height:24px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
+
+/* TOOLTIP */
+.tip-label{font-size:.72rem;color:var(--muted);font-weight:600;display:flex;align-items:center;gap:5px;cursor:help;border-bottom:1px dashed var(--muted);width:fit-content;}
+.tip-label:hover{color:var(--text);}
 
 @media(max-width:900px){
   .g21,.g2,.g3{grid-template-columns:1fr;}
   header,.filters,.content{padding-left:14px;padding-right:14px;}
-  .upd,.email-funnel{display:none;}
-  .email-funnel{grid-template-columns:1fr 1fr;}
+  .ef{grid-template-columns:1fr 1fr;}
+  .upd{display:none;}
 }
 </style>
 </head>
 <body>
 
 <div id="auth">
-  <div class="auth-brand">
-    <div class="brand-icon">SS</div>
-    <div class="auth-title">Story<span>Stats</span></div>
-  </div>
+  <div class="ab"><div class="ai">SS</div><div class="at">Story<span>Stats</span></div></div>
   <p>Private dashboard — SBC team only</p>
   <input type="password" id="pw" placeholder="Enter password" autocomplete="off">
   <button onclick="checkPw()">Enter Dashboard</button>
@@ -164,15 +169,12 @@ header h1 span{color:var(--accent);}
 
 <div id="main">
   <header>
-    <div class="h-left">
-      <div class="h-icon">SS</div>
-      <h1>Story<span>Stats</span> Dashboard</h1>
-    </div>
-    <div class="h-right">
+    <div class="hl"><div class="hi">SS</div><h1>Story<span>Stats</span> Dashboard</h1></div>
+    <div class="hr">
       <span class="upd" id="upd"></span>
-      <button class="btn btn-o" onclick="loadAll()">↻ Refresh</button>
+      <button class="btn btn-o" onclick="applyFilter()">↻ Refresh</button>
       <button class="btn btn-p" onclick="exportReport()">↓ Export</button>
-      <button class="btn-sq" id="theme-btn" onclick="toggleTheme()">🌙</button>
+      <button class="btn-sq" id="tbtn" onclick="toggleTheme()">🌙</button>
     </div>
   </header>
 
@@ -181,7 +183,7 @@ header h1 span{color:var(--accent);}
     <select id="period" onchange="onPeriod()">
       <option value="all">All Time</option>
       <option value="today">Today</option>
-      <option value="7">This Week</option>
+      <option value="7">This Week (7 days)</option>
       <option value="30">Last 30 Days</option>
       <option value="90">Last 90 Days</option>
       <option value="365">Last 12 Months</option>
@@ -190,8 +192,9 @@ header h1 span{color:var(--accent);}
     <input type="date" id="d-from" style="display:none">
     <span id="d-sep" style="display:none;color:var(--muted);font-size:.8rem">to</span>
     <input type="date" id="d-to" style="display:none">
-    <button class="btn btn-p" onclick="loadAll()">Apply</button>
+    <button class="btn btn-p" onclick="applyFilter()">Apply</button>
     <button class="btn btn-o" onclick="resetFilters()">Reset</button>
+    <span id="filter-info" style="color:var(--muted);font-size:.78rem;font-weight:600"></span>
   </div>
 
   <div class="content">
@@ -206,17 +209,15 @@ header h1 span{color:var(--accent);}
     <div class="pane on" id="tab-overview">
       <div class="cards" id="stat-cards"><div class="ld"><div class="sp"></div></div></div>
 
-      <!-- Email funnel -->
-      <div class="sh">Email Capture</div>
-      <div class="email-funnel" id="email-funnel"><div class="ld"><div class="sp"></div></div></div>
+      <div class="sh">Email Capture <span style="font-weight:400;text-transform:none;letter-spacing:0">(GA4 — all time, not affected by period filter)</span></div>
+      <div class="ef" id="email-funnel"><div class="ld"><div class="sp"></div></div></div>
 
-      <!-- Sessions chart with week/month toggle -->
       <div class="g21">
         <div class="box">
           <h3>Sessions Over Time</h3>
-          <div class="toggle-grp">
-            <button id="btn-weekly" onclick="setTimeGranularity('weekly')">Week</button>
-            <button id="btn-monthly" class="on" onclick="setTimeGranularity('monthly')">Month</button>
+          <div class="tgg">
+            <button id="btn-day" onclick="setGran('day')">Day</button>
+            <button id="btn-month" class="on" onclick="setGran('month')">Month</button>
           </div>
           <div class="cw" style="height:175px"><canvas id="c-trend"></canvas></div>
         </div>
@@ -232,8 +233,8 @@ header h1 span{color:var(--accent);}
           <div class="cw" style="height:160px"><canvas id="c-tod"></canvas></div>
         </div>
         <div class="box">
-          <h3>Returning vs New <span style="font-weight:400;text-transform:none;letter-spacing:0">(GA4)</span></h3>
-          <div class="cw" style="height:160px"><canvas id="c-returning"></canvas></div>
+          <h3>Returning vs New <span style="font-weight:400;text-transform:none;letter-spacing:0">(GA4 — all time)</span></h3>
+          <div class="cw" style="height:160px"><canvas id="c-ret"></canvas></div>
         </div>
       </div>
     </div>
@@ -242,40 +243,41 @@ header h1 span{color:var(--accent);}
     <div class="pane" id="tab-audience">
       <div class="cards" id="ga4-cards"><div class="ld"><div class="sp"></div></div></div>
 
-      <!-- Traffic channels -->
-      <div class="sh">Traffic Sources</div>
-      <div class="g2" style="margin-bottom:20px">
+      <div class="sh">Traffic Sources <span style="font-weight:400;text-transform:none;letter-spacing:0">(GA4 — all time)</span></div>
+      <div class="g2 mb">
         <div class="box">
           <h3>Channel Breakdown</h3>
-          <div id="channel-bars"><div class="ld"><div class="sp"></div></div></div>
+          <div id="ch-bars"><div class="ld"><div class="sp"></div></div></div>
         </div>
         <div class="box">
-          <h3>Channel Engagement Rate</h3>
-          <div class="cw" style="height:200px"><canvas id="c-channels"></canvas></div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:13px">
+            <h3 style="margin-bottom:0">Channel Engagement Rate</h3>
+            <span class="tip-label" title="Engagement rate = % of sessions lasting 10+ seconds, having a conversion, or viewing 2+ pages. Higher = more meaningful visits.">?</span>
+          </div>
+          <div class="cw" style="height:200px"><canvas id="c-ch"></canvas></div>
         </div>
       </div>
 
-      <!-- Map -->
-      <div class="sh">Users by Country</div>
-      <div class="box" style="margin-bottom:14px">
-        <h3>World Map <span style="font-weight:400;text-transform:none;letter-spacing:0">(GA4 — active users)</span></h3>
-        <div id="world-map"><div class="ld"><div class="sp"></div><span>Loading map...</span></div></div>
-        <div class="map-tooltip" id="map-tip"></div>
+      <div class="sh">Users by Country <span style="font-weight:400;text-transform:none;letter-spacing:0">(GA4 — all time)</span></div>
+      <div class="box mb">
+        <h3>World Map</h3>
+        <div id="wmap"><div class="ld"><div class="sp"></div><span>Loading map...</span></div></div>
+        <div class="mtt" id="mtt"></div>
       </div>
 
       <div class="box">
-        <h3>Country Details — <span style="font-weight:500;text-transform:none;letter-spacing:0">click column headers to sort</span></h3>
+        <h3>Country Details — <span style="font-weight:500;text-transform:none;letter-spacing:0">click headers to sort</span></h3>
         <div class="ox">
-          <table class="tbl" id="country-tbl">
+          <table class="tbl">
             <thead><tr>
-              <th>#</th>
-              <th onclick="sortTable('country')" data-col="country">Country <span class="sort-arrow">↕</span></th>
-              <th onclick="sortTable('activeUsers')" data-col="activeUsers">Active Users <span class="sort-arrow">↕</span></th>
-              <th onclick="sortTable('newUsers')" data-col="newUsers">New Users <span class="sort-arrow">↕</span></th>
-              <th onclick="sortTable('engagementRate')" data-col="engagementRate">Eng. Rate <span class="sort-arrow">↕</span></th>
-              <th onclick="sortTable('avgEngagementTime')" data-col="avgEngagementTime">Avg Time <span class="sort-arrow">↕</span></th>
+              <th style="width:28px">#</th>
+              <th onclick="srt('country')" data-col="country">Country <span class="sa">↕</span></th>
+              <th onclick="srt('activeUsers')" data-col="activeUsers">Active Users <span class="sa">↕</span></th>
+              <th onclick="srt('newUsers')" data-col="newUsers">New Users <span class="sa">↕</span></th>
+              <th onclick="srt('engagementRate')" data-col="engagementRate">Eng. Rate <span class="sa">↕</span></th>
+              <th onclick="srt('avgEngagementTime')" data-col="avgEngagementTime">Avg Time <span class="sa">↕</span></th>
             </tr></thead>
-            <tbody id="country-tbody"></tbody>
+            <tbody id="ctbody"></tbody>
           </table>
         </div>
       </div>
@@ -294,306 +296,496 @@ header h1 span{color:var(--accent);}
 </div>
 
 <script>
-const URL = 'https://script.google.com/macros/s/AKfycbynPue27Lfk1pRK-mKEgXg__1QZVKDj1hDyNr50FyAmiTPez905TLWfaJpdVx3IbBfOQQ/exec';
+const ASURL = 'https://script.google.com/macros/s/AKfycbyk8FGvVY6QnABr100KIkIcTJraiEUuH3xD_F1n8xDhmezT6kzRepIln7M4dTz68qH34w/exec';
 const PW = 'Meridian47Foxglove';
-let S=null, GA=null, EV=null, isDark=false, timeGran='monthly';
-let sortCol='activeUsers', sortDir='desc';
-const CH = {};
+
+// State
+let RAW = null;   // {headers, rows, customStatStartRow, lastUpdated}
+let GA  = null;   // ga4 cache data
+let EV  = null;   // events cache
+let ROWS = [];    // filtered rows (subset of RAW.rows)
+let isDark = false, gran = 'month';
+let sortCol = 'activeUsers', sortDir = 'desc';
+const CH = {};    // chart instances
+
+// Column indices (matching COLS in Apps Script)
+const C = {TS:0,DATE:1,TIME:2,PAGES:3,HRS:4,MINS:5,TMINS:6,PCT:7,TPAGES:8,
+           FIN:9,TITLE:10,HASTITLE:11,INK:12,COVER:13,USEBG:14,BG:15,
+           DEVICE:16,OS:17,SRC:18,RET:19,CSTAT:20,CLABEL:21,CVAL:22};
 
 // ============================================================ AUTH
 function checkPw() {
-  if (document.getElementById('pw').value === PW) { window.location.hash=PW; unlock(); }
-  else { document.getElementById('auth-err').style.display='block'; }
+  if (document.getElementById('pw').value === PW) { window.location.hash = PW; unlock(); }
+  else document.getElementById('auth-err').style.display = 'block';
 }
-document.getElementById('pw').addEventListener('keydown',e=>{ if(e.key==='Enter') checkPw(); });
+document.getElementById('pw').addEventListener('keydown', e => { if (e.key==='Enter') checkPw(); });
 function unlock() {
-  document.getElementById('auth').style.display='none';
-  document.getElementById('main').style.display='block';
+  document.getElementById('auth').style.display = 'none';
+  document.getElementById('main').style.display = 'block';
   loadAll();
 }
-if (window.location.hash.replace('#','')===PW) unlock();
+if (window.location.hash.replace('#','') === PW) unlock();
 
 // ============================================================ THEME
 function toggleTheme() {
-  isDark=!isDark;
-  document.documentElement.setAttribute('data-theme',isDark?'dark':'');
-  document.getElementById('theme-btn').textContent=isDark?'☀️':'🌙';
-  if(S) { renderTrend(); renderDevice(); renderTOD(); renderReturning(); }
-  if(GA) renderChannelChart();
+  isDark = !isDark;
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : '');
+  document.getElementById('tbtn').textContent = isDark ? '☀️' : '🌙';
+  renderOverviewCharts();
+  if (GA) { renderChannelChart(); renderMap(); }
 }
 
-// ============================================================ DATA
-async function fetchData(action) {
+// ============================================================ DATA LOADING
+async function fetchJ(action) {
   try {
-    const r = await fetch(URL+'?action='+action);
+    const r = await fetch(ASURL + '?action=' + action);
     const t = await r.text();
     return JSON.parse(t);
-  } catch(e) { console.error('Fetch error',action,e); return {error:e.toString()}; }
+  } catch(e) { console.error('Fetch error', action, e); return { error: String(e) }; }
 }
+
 async function loadAll() {
-  document.getElementById('stat-cards').innerHTML='<div class="ld"><div class="sp"></div></div>';
-  [S,GA,EV] = await Promise.all([fetchData('summary'),fetchData('ga4'),fetchData('events')]);
-  if(S&&!S.error) { renderCards(); renderEmailFunnel(); renderTrend(); renderDevice(); renderTOD(); renderReturning(); }
-  if(GA&&!GA.error) { renderGA4Cards(); renderCountryTable(); renderMap(); renderChannelBars(); renderChannelChart(); }
-  if(S&&!S.error) { renderDesign(); renderBooks(); }
-  if(S) document.getElementById('upd').textContent='Updated '+new Date(S.lastUpdated).toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+  document.getElementById('stat-cards').innerHTML = '<div class="ld"><div class="sp"></div></div>';
+  [RAW, GA, EV] = await Promise.all([fetchJ('rows'), fetchJ('ga4'), fetchJ('events')]);
+
+  if (RAW && !RAW.error) {
+    if (RAW.lastUpdated) {
+      document.getElementById('upd').textContent = 'Updated ' +
+        new Date(RAW.lastUpdated).toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+    }
+    applyFilter(); // this sets ROWS and renders overview + design + books
+  }
+  if (EV && !EV.error) renderEmailFunnel();
+  if (GA && !GA.error) { renderGA4Cards(); renderCountryTable(); renderMap(); renderChannelBars(); renderChannelChart(); renderReturning(); }
+}
+
+// ============================================================ FILTERING
+function getDateRange() {
+  const v = document.getElementById('period').value;
+  const now = new Date(); now.setHours(23,59,59,999);
+  let from = null, to = now;
+  if (v === 'today') {
+    from = new Date(); from.setHours(0,0,0,0);
+  } else if (v === 'custom') {
+    const df = document.getElementById('d-from').value;
+    const dt = document.getElementById('d-to').value;
+    if (df) { from = new Date(df); from.setHours(0,0,0,0); }
+    if (dt) { to = new Date(dt); to.setHours(23,59,59,999); }
+  } else if (v !== 'all') {
+    const days = parseInt(v);
+    from = new Date(now.getTime() - days * 86400000);
+    from.setHours(0,0,0,0);
+  }
+  return { from, to };
+}
+
+function parseRowDate(row) {
+  // Use timestamp column (UTC) for filtering
+  const ts = String(row[C.TS]);
+  if (!ts || ts === 'undefined') return null;
+  try {
+    const d = new Date(ts.replace('/', '-').replace(', ', 'T'));
+    return isNaN(d) ? null : d;
+  } catch(e) { return null; }
+}
+
+function applyFilter() {
+  if (!RAW || !RAW.rows) return;
+  const { from, to } = getDateRange();
+  const v = document.getElementById('period').value;
+
+  if (!from && v === 'all') {
+    ROWS = RAW.rows;
+  } else {
+    ROWS = RAW.rows.filter(row => {
+      const d = parseRowDate(row);
+      if (!d) return false;
+      if (from && d < from) return false;
+      if (to && d > to) return false;
+      return true;
+    });
+  }
+
+  const info = v === 'all' ? '' : `${ROWS.length.toLocaleString()} sessions in period`;
+  document.getElementById('filter-info').textContent = info;
+
+  renderCards();
+  renderOverviewCharts();
+  renderDesign();
+  renderBooks();
 }
 
 // ============================================================ STAT CARDS
+function calcStats(rows) {
+  let totalPages=0, totalMins=0, booksFinished=0;
+  const allMins=[], allPages=[];
+  rows.forEach(r => {
+    const pages = parseFloat(r[C.PAGES]) || 0;
+    const mins  = parseFloat(r[C.TMINS]) || 0;
+    if (pages > 0) { totalPages += pages; allPages.push(pages); }
+    if (mins > 0 && mins <= 720) { totalMins += mins; allMins.push(mins); }
+    if (String(r[C.FIN]).toLowerCase() === 'true') booksFinished++;
+  });
+  return {
+    totalSessions: rows.length,
+    totalPages: Math.round(totalPages),
+    totalHours: Math.round(totalMins / 60),
+    booksFinished,
+    avgPages:    allPages.length ? Math.round(allPages.reduce((a,b)=>a+b,0)/allPages.length) : 0,
+    medianPages: allPages.length ? median(allPages) : 0,
+    avgMins:     allMins.length  ? Math.round(allMins.reduce((a,b)=>a+b,0)/allMins.length) : 0,
+    medianMins:  allMins.length  ? median(allMins) : 0,
+  };
+}
+
 function renderCards() {
-  const cards=[
-    {l:'Total Sessions',   v:fmt(S.totalSessions),  c:'a', s:'clean deduplicated sessions'},
-    {l:'Pages Read',       v:fmt(S.totalPages),      c:'b', s:'across all sessions'},
-    {l:'Hours Read',       v:fmt(S.totalHours),      c:'g', s:'total reading time'},
-    {l:'Books Finished',   v:fmt(S.booksFinished),   c:'a', s:'marked 100% complete'},
-    {l:'Avg Pages',        v:fmt(S.avgPages),        c:'t', s:'mean per session'},
-    {l:'Median Pages',     v:fmt(S.medianPages),     c:'t', s:'median per session'},
-    {l:'Avg Duration',     v:(S.avgMins||0)+' min',  c:'t', s:'mean session length'},
-    {l:'Median Duration',  v:(S.medianMins||0)+' min',c:'t',s:'median session length'},
+  const s = calcStats(ROWS);
+  const cards = [
+    {l:'Total Sessions',   v:fmt(s.totalSessions), c:'a', sub:'clean deduplicated sessions'},
+    {l:'Pages Read',       v:fmt(s.totalPages),    c:'b', sub:'across all sessions'},
+    {l:'Hours Read',       v:fmt(s.totalHours),    c:'g', sub:'total reading time'},
+    {l:'Books Finished',   v:fmt(s.booksFinished), c:'a', sub:'marked 100% complete'},
+    {l:'Avg Pages',        v:fmt(s.avgPages),      c:'t', sub:'mean per session'},
+    {l:'Median Pages',     v:fmt(s.medianPages),   c:'t', sub:'median per session'},
+    {l:'Avg Duration',     v:s.avgMins+' min',     c:'t', sub:'mean session length'},
+    {l:'Median Duration',  v:s.medianMins+' min',  c:'t', sub:'median session length'},
   ];
-  document.getElementById('stat-cards').innerHTML=cards.map(c=>
-    `<div class="card"><div class="clabel">${c.l}</div><div class="cval ${c.c}">${c.v}</div><div class="csub">${c.s}</div></div>`
+  document.getElementById('stat-cards').innerHTML = cards.map(c=>
+    `<div class="card"><div class="cl">${c.l}</div><div class="cv ${c.c}">${c.v}</div><div class="cs">${c.sub}</div></div>`
   ).join('');
 }
 
-// ============================================================ EMAIL FUNNEL
+// ============================================================ EMAIL FUNNEL (GA4 only, no filter)
 function renderEmailFunnel() {
-  if(!EV||EV.error) { document.getElementById('email-funnel').innerHTML='<p style="color:var(--muted);font-size:.84rem">Email data unavailable</p>'; return; }
-  const shown  = EV.ss_email_modal_shown || 0;
-  const signup = EV.ss_email_signup      || 0;
-  const skip   = EV.ss_email_skipped     || 0;
-  const optIn  = S ? (S.emailOptins||0) : 0;
-  const steps=[
-    {n:fmt(shown),  l:'Saw Prompt',    p:'100%'},
-    {n:fmt(signup), l:'Submitted Email', p:shown?pct(signup,shown):'—'},
-    {n:fmt(skip),   l:'Skipped',       p:shown?pct(skip,shown):'—'},
-    {n:fmt(optIn),  l:'Opted In',      p:signup?pct(optIn,signup):'—'},
+  const shown   = EV.ss_email_modal_shown || 0;
+  const signup  = EV.ss_email_signup      || 0;
+  const skipped = EV.ss_email_skipped     || 0;
+  const optIn   = EV.ss_email_opted_in    || 0;
+  const optOut  = EV.ss_email_opted_out   || 0;
+  const steps = [
+    {n:fmt(shown),   l:'Saw Prompt',       p:'100%'},
+    {n:fmt(signup),  l:'Submitted Email',  p:pct(signup,shown)},
+    {n:fmt(skipped), l:'Skipped',          p:pct(skipped,shown)},
+    {n:fmt(optIn),   l:'Opted In',         p:pct(optIn,signup)},
+    {n:fmt(optOut),  l:'Opted Out',        p:pct(optOut,signup)},
   ];
-  document.getElementById('email-funnel').innerHTML=steps.map(s=>
-    `<div class="ef-step"><div class="ef-num">${s.n}</div><div class="ef-label">${s.l}</div><div class="ef-pct">${s.p}</div></div>`
+  document.getElementById('email-funnel').innerHTML = steps.map(s=>
+    `<div class="efs"><div class="efn">${s.n}</div><div class="efl">${s.l}</div><div class="efp">${s.p}</div></div>`
   ).join('');
 }
 
-// ============================================================ TREND CHART
-function setTimeGranularity(g) {
-  timeGran=g;
-  document.getElementById('btn-weekly').classList.toggle('on',g==='weekly');
-  document.getElementById('btn-monthly').classList.toggle('on',g==='monthly');
+// ============================================================ OVERVIEW CHARTS
+function renderOverviewCharts() {
+  renderTrend(); renderDevice(); renderTOD();
+}
+
+// Trend chart
+function setGran(g) {
+  gran = g;
+  document.getElementById('btn-day').classList.toggle('on', g==='day');
+  document.getElementById('btn-month').classList.toggle('on', g==='month');
   renderTrend();
 }
+
 function renderTrend() {
-  const C=cc();
+  const C2 = cc();
   let entries;
-  if(timeGran==='weekly') {
-    entries=Object.entries(S.weeklyCounts||{}).sort((a,b)=>a[0].localeCompare(b[0]));
-  } else {
-    entries=Object.entries(S.monthlyCounts||{}).sort((a,b)=>{
-      const[ma,ya]=a[0].split('/'), [mb,yb]=b[0].split('/');
-      return new Date(ya+'-'+ma+'-01')-new Date(yb+'-'+mb+'-01');
+  if (gran === 'day') {
+    // daily counts from ROWS, sorted
+    const counts = {};
+    ROWS.forEach(r => {
+      const d = parseRowDate(r);
+      if (!d) return;
+      const key = d.toISOString().slice(0,10); // YYYY-MM-DD
+      counts[key] = (counts[key]||0) + 1;
     });
+    entries = Object.entries(counts).sort((a,b) => a[0].localeCompare(b[0]));
+    // format label as "May 4"
+    const labels = entries.map(([k]) => {
+      const d = new Date(k+'T00:00:00');
+      return d.toLocaleDateString('en-US', {month:'short', day:'numeric'});
+    });
+    mk('c-trend','line', labels, [{
+      data: entries.map(([,v])=>v),
+      borderColor: C2.accent, backgroundColor: C2.accentBg,
+      borderWidth: 2, pointRadius: 0, fill: true, tension: 0.3
+    }]);
+  } else {
+    // monthly counts from ROWS
+    const counts = {};
+    ROWS.forEach(r => {
+      const d = parseRowDate(r);
+      if (!d) return;
+      const key = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+      counts[key] = (counts[key]||0) + 1;
+    });
+    entries = Object.entries(counts).sort((a,b) => a[0].localeCompare(b[0]));
+    const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const labels = entries.map(([k]) => {
+      const [y,m] = k.split('-');
+      return MONTHS[parseInt(m)-1] + ' ' + y;
+    });
+    mk('c-trend','bar', labels, [{
+      data: entries.map(([,v])=>v),
+      backgroundColor: C2.blue+'cc', borderRadius: 4, borderSkipped: false
+    }], {xGrid:false});
   }
-  mk('c-trend','bar',entries.map(([k])=>k),
-    [{data:entries.map(([,v])=>v),backgroundColor:C.accent+'cc',borderRadius:4,borderSkipped:false}],
-    {xGrid:false}
-  );
 }
 
-// ============================================================ DEVICE
 function renderDevice() {
-  const C=cc();
-  const e=topN(S.devices,5);
-  const total=e.reduce((s,[,v])=>s+v,0);
+  const C2 = cc();
+  const counts = {};
+  ROWS.forEach(r => {
+    const v = String(r[C.DEVICE]).trim().toLowerCase();
+    if (v && v !== 'undefined') counts[v] = (counts[v]||0)+1;
+  });
+  const total = Object.values(counts).reduce((a,b)=>a+b,0);
+  const entries = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,5);
   mk('c-device','doughnut',
-    e.map(([k])=>cap(k)+' '+pct(e.find(x=>x[0]===k)[1],total)),
-    [{data:e.map(([,v])=>v),backgroundColor:C.pal,borderWidth:0,hoverOffset:4}],
+    entries.map(([k,v]) => cap(k) + ' (' + pct(v,total) + ')'),
+    [{data: entries.map(([,v])=>v), backgroundColor: C2.pal, borderWidth:0, hoverOffset:4}],
     {legend:true}
   );
 }
 
-// ============================================================ TIME OF DAY
 function renderTOD() {
-  const C=cc();
-  const tod=S.timeOfDay||{};
-  const order=['Morning (5am-12pm)','Afternoon (12-5pm)','Evening (5-9pm)','Night (9pm-5am)'];
-  const labels=['Morning','Afternoon','Evening','Night'];
-  const vals=order.map(k=>tod[k]||0);
-  const total=vals.reduce((a,b)=>a+b,0);
-  mk('c-tod','bar',labels.map((l,i)=>l+' '+pct(vals[i],total)),
-    [{data:vals,backgroundColor:[C.yellow+'cc',C.accent+'cc',C.blue+'cc',C.purple+'cc'],borderRadius:4,borderSkipped:false}],
+  const C2 = cc();
+  const tod = {Morning:0, Afternoon:0, Evening:0, Night:0};
+  ROWS.forEach(r => {
+    const t = String(r[C.TIME]);
+    const m = t.match(/^(\d{2}):/);
+    if (!m) return;
+    const h = parseInt(m[1]);
+    if      (h>=5  && h<12) tod.Morning++;
+    else if (h>=12 && h<17) tod.Afternoon++;
+    else if (h>=17 && h<21) tod.Evening++;
+    else                     tod.Night++;
+  });
+  const total = Object.values(tod).reduce((a,b)=>a+b,0);
+  const keys = Object.keys(tod);
+  mk('c-tod','bar',
+    keys.map(k => k + ' (' + pct(tod[k],total) + ')'),
+    [{data: keys.map(k=>tod[k]), backgroundColor:[C2.yellow+'cc',C2.accent+'cc',C2.blue+'cc',C2.purple+'cc'], borderRadius:4, borderSkipped:false}],
     {xGrid:false}
   );
 }
 
-// ============================================================ RETURNING VS NEW (GA4)
 function renderReturning() {
-  if(!GA||!GA.userTypes) return;
-  const C=cc();
-  const types=GA.userTypes;
-  const newU=parseInt(types.new||0), ret=parseInt(types.returning||0);
-  const total=newU+ret;
-  mk('c-returning','doughnut',
-    ['New '+pct(newU,total),'Returning '+pct(ret,total)],
-    [{data:[newU,ret],backgroundColor:[C.blue,C.accent],borderWidth:0,hoverOffset:4}],
+  if (!GA||!GA.userTypes) return;
+  const C2 = cc();
+  const newU = GA.userTypes.new||0, ret = GA.userTypes.returning||0;
+  const total = newU + ret;
+  mk('c-ret','doughnut',
+    ['New (' + pct(newU,total) + ')','Returning (' + pct(ret,total) + ')'],
+    [{data:[newU,ret], backgroundColor:[C2.blue,C2.accent], borderWidth:0, hoverOffset:4}],
     {legend:true}
   );
 }
 
 // ============================================================ GA4 CARDS
 function renderGA4Cards() {
-  if(!GA||GA.error||!GA.totals) {
-    document.getElementById('ga4-cards').innerHTML='<p style="color:var(--muted);padding:16px;font-size:.85rem">GA4 data unavailable. Run pullGA4Data() in Apps Script.</p>';
+  if (!GA||GA.error||!GA.totals) {
+    document.getElementById('ga4-cards').innerHTML = '<p style="color:var(--muted);padding:16px;font-size:.84rem">GA4 data unavailable.</p>';
     return;
   }
-  const t=GA.totals;
-  const cards=[
-    {l:'New Users (GA4)',      v:fmt(parseInt(t.newUsers)),      c:'b', s:'first-time visitors'},
-    {l:'Returning Users (GA4)',v:fmt(parseInt(t.activeUsers)-parseInt(t.newUsers)), c:'a', s:'came back'},
-    {l:'Engaged Sessions',     v:fmt(parseInt(t.engagedSessions)),c:'g', s:'meaningful visits'},
-    {l:'Engagement Rate',      v:(parseFloat(t.engagementRate)*100).toFixed(1)+'%',c:'y',s:'of all sessions'},
-    {l:'Downloads (GA4)',      v:fmt(EV&&EV.ss_download),        c:'a', s:'ss_download events'},
-    {l:'Countries',            v:GA.countries?GA.countries.length:0, c:'b', s:'reached worldwide'},
+  const t = GA.totals;
+  const newU = parseInt(GA.userTypes?.new||0);
+  const retU = parseInt(GA.userTypes?.returning||0);
+  const downloads = EV ? (EV.ss_download||0) : 0;
+  const cards = [
+    {l:'New Users (GA4)',      v:fmt(newU),                                    c:'b', sub:'first-time visitors'},
+    {l:'Returning Users (GA4)',v:fmt(retU),                                    c:'a', sub:'came back to the tool'},
+    {l:'Engaged Sessions',     v:fmt(parseInt(t.engagedSessions)),             c:'g', sub:'10+ sec or 2+ pages'},
+    {l:'Engagement Rate',      v:(parseFloat(t.engagementRate)*100).toFixed(1)+'%',c:'y',sub:'of all GA4 sessions'},
+    {l:'Cards Downloaded',     v:fmt(downloads),                               c:'a', sub:'download button pressed'},
+    {l:'Countries',            v:GA.countries?GA.countries.length:0,           c:'b', sub:'reached worldwide'},
   ];
-  document.getElementById('ga4-cards').innerHTML=cards.map(c=>
-    `<div class="card"><div class="clabel">${c.l}</div><div class="cval ${c.c}">${c.v}</div><div class="csub">${c.s}</div></div>`
+  document.getElementById('ga4-cards').innerHTML = cards.map(c=>
+    `<div class="card"><div class="cl">${c.l}</div><div class="cv ${c.c}">${c.v}</div><div class="cs">${c.sub}</div></div>`
   ).join('');
 }
 
-// ============================================================ CHANNEL BARS
+// ============================================================ CHANNELS
 function renderChannelBars() {
-  if(!GA||!GA.channels||!GA.channels.length) {
-    document.getElementById('channel-bars').innerHTML='<p style="color:var(--muted);font-size:.84rem">Channel data unavailable</p>';
+  if (!GA||!GA.channels||!GA.channels.length) {
+    document.getElementById('ch-bars').innerHTML='<p style="color:var(--muted);font-size:.84rem">Channel data unavailable.</p>';
     return;
   }
-  const max=Math.max(...GA.channels.map(c=>parseInt(c.activeUsers)||0));
-  const total=GA.channels.reduce((s,c)=>s+(parseInt(c.activeUsers)||0),0);
-  document.getElementById('channel-bars').innerHTML='<div class="bl">'+
-    GA.channels.map(c=>{
-      const u=parseInt(c.activeUsers)||0;
+  const total = GA.channels.reduce((s,c)=>s+(parseInt(c.activeUsers)||0),0);
+  const max   = Math.max(...GA.channels.map(c=>parseInt(c.activeUsers)||0));
+  document.getElementById('ch-bars').innerHTML = '<div class="bl">' +
+    GA.channels.map(c => {
+      const u = parseInt(c.activeUsers)||0;
       return `<div class="bi">
-        <div class="br"><span class="blabel">${c.channel}</span><span class="bcount">${fmt(u)} (${pct(u,total)})</span></div>
-        <div class="btrack"><div class="bfill b" style="width:${max?(u/max*100).toFixed(0):0}%"></div></div>
+        <div class="br"><span class="blb">${c.channel}</span><span class="brc">${fmt(u)} (${pct(u,total)})</span></div>
+        <div class="bt"><div class="bf b" style="width:${max?(u/max*100).toFixed(0):0}%"></div></div>
       </div>`;
-    }).join('')+'</div>';
+    }).join('') + '</div>';
 }
 
 function renderChannelChart() {
-  if(!GA||!GA.channels) return;
-  const C=cc();
-  mk('c-channels','bar',
-    GA.channels.map(c=>c.channel.replace('Organic ','').replace(' Traffic','')),
-    [{data:GA.channels.map(c=>(parseFloat(c.engagementRate)*100).toFixed(1)),backgroundColor:C.blue+'cc',borderRadius:4,borderSkipped:false}],
-    {xGrid:false,extra:{scales:{y:{ticks:{callback:v=>v+'%',color:C.muted,font:{size:10}},grid:{color:C.grid}},x:{ticks:{color:C.muted,font:{size:9}},grid:{display:false}}}}}
+  if (!GA||!GA.channels) return;
+  const C2 = cc();
+  mk('c-ch','bar',
+    GA.channels.map(c => c.channel.replace('Organic ','').replace(' Traffic','')),
+    [{data: GA.channels.map(c => (parseFloat(c.engagementRate)*100).toFixed(1)),
+      backgroundColor: C2.blue+'cc', borderRadius:4, borderSkipped:false}],
+    {xGrid:false, extra:{scales:{
+      y:{ticks:{callback:v=>v+'%',color:C2.muted,font:{size:10}},grid:{color:C2.grid}},
+      x:{ticks:{color:C2.muted,font:{size:9}},grid:{display:false}}
+    }}}
   );
 }
 
 // ============================================================ WORLD MAP
+// GA4 country names don't always match GeoJSON names -- map the known mismatches
+const COUNTRY_NAME_MAP = {
+  'United States': 'United States of America',
+  'South Korea': 'South Korea',
+  'North Korea': 'North Korea',
+  'Tanzania': 'United Republic of Tanzania',
+  'Congo': 'Republic of the Congo',
+  'DR Congo': 'Democratic Republic of the Congo',
+  'Ivory Coast': "Côte d'Ivoire",
+  "Côte d'Ivoire": "Côte d'Ivoire",
+  'Czech Republic': 'Czech Republic',
+  'Czechia': 'Czech Republic',
+  'Bosnia & Herzegovina': 'Bosnia and Herzegovina',
+  'Trinidad & Tobago': 'Trinidad and Tobago',
+  'Türkiye': 'Turkey',
+  'Russia': 'Russia',
+  'Venezuela': 'Venezuela',
+  'Bolivia': 'Bolivia',
+  'Syria': 'Syria',
+  'Laos': 'Lao PDR',
+  'Myanmar': 'Myanmar',
+  'Vietnam': 'Vietnam',
+};
+
 async function renderMap() {
-  if(!GA||!GA.countries||!GA.countries.length) return;
-  const mapEl=document.getElementById('world-map');
-  mapEl.innerHTML='<div class="ld"><div class="sp"></div><span>Loading map...</span></div>';
+  if (!GA||!GA.countries||!GA.countries.length) return;
+  const mapEl = document.getElementById('wmap');
+  mapEl.innerHTML = '<div class="ld"><div class="sp"></div><span>Loading map...</span></div>';
 
   try {
-    const r=await fetch('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson');
-    const geo=await r.json();
-    const maxU=Math.max(...GA.countries.map(c=>parseInt(c.activeUsers)||0));
-    const countryMap={};
-    GA.countries.forEach(c=>{ countryMap[c.country]={users:parseInt(c.activeUsers)||0,eng:(parseFloat(c.engagementRate)*100).toFixed(1),time:fmtSecs(parseInt(c.avgEngagementTime)||0)}; });
+    const r = await fetch('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson');
+    const geo = await r.json();
 
-    const W=mapEl.clientWidth||800, H=320;
-    const tip=document.getElementById('map-tip');
+    // Build lookup: GeoJSON name -> user data
+    const ga4Lookup = {};
+    GA.countries.forEach(c => {
+      const mapped = COUNTRY_NAME_MAP[c.country] || c.country;
+      ga4Lookup[mapped] = { users: parseInt(c.activeUsers)||0, eng: (parseFloat(c.engagementRate)*100).toFixed(1), time: fmtSecs(parseInt(c.avgEngagementTime)||0) };
+      // Also store under original name as fallback
+      ga4Lookup[c.country] = ga4Lookup[c.country] || ga4Lookup[mapped];
+    });
 
-    // simple equirectangular projection
-    function project(lon,lat) {
-      return [(lon+180)*(W/360), (90-lat)*(H/180)];
+    const maxU = Math.max(...Object.values(ga4Lookup).map(d=>d.users));
+    const W = mapEl.clientWidth || 900, H = 300;
+
+    function project(lon, lat) {
+      return [(lon + 180) * (W / 360), (90 - lat) * (H / 180)];
     }
-    function pathFromFeature(feature) {
-      const coords=feature.geometry.type==='Polygon'?[feature.geometry.coordinates]:feature.geometry.coordinates;
-      return coords.map(poly=>poly[0].map((p,i)=>{
-        const [x,y]=project(p[0],p[1]);
-        return (i===0?'M':'L')+x.toFixed(1)+','+y.toFixed(1);
-      }).join(' ')+'Z').join(' ');
+    function toPath(feature) {
+      const polys = feature.geometry.type === 'Polygon'
+        ? [feature.geometry.coordinates]
+        : feature.geometry.coordinates;
+      return polys.map(poly =>
+        poly[0].map((p,i) => {
+          const [x,y] = project(p[0], p[1]);
+          return (i===0?'M':'L') + x.toFixed(1) + ',' + y.toFixed(1);
+        }).join(' ') + 'Z'
+      ).join(' ');
     }
     function getColor(name) {
-      const d=countryMap[name];
-      if(!d) return isDark?'#2d3340':'#e0dbd4';
-      const intensity=Math.sqrt(d.users/maxU);
-      if(isDark) {
-        const r=Math.round(26+intensity*(210-26));
-        const g=Math.round(30+intensity*(83-30));
-        const b=Math.round(40+intensity*(67-40));
-        return `rgb(${r},${g},${b})`;
+      const d = ga4Lookup[name];
+      if (!d || d.users === 0) return isDark ? '#2d3340' : '#e8e4de';
+      const t = Math.pow(d.users / maxU, 0.4); // power scale so small countries still show
+      // Interpolate from light to accent color
+      if (isDark) {
+        const rv = Math.round(45 + t*(210-45));
+        const gv = Math.round(50 + t*(83-50));
+        const bv = Math.round(60 + t*(67-60));
+        return `rgb(${rv},${gv},${bv})`;
       } else {
-        const r=Math.round(224+intensity*(210-224));
-        const g=Math.round(219+intensity*(83-219));
-        const b=Math.round(212+intensity*(67-212));
-        return `rgb(${r},${g},${b})`;
+        const rv = Math.round(240 + t*(210-240));
+        const gv = Math.round(230 + t*(83-230));
+        const bv = Math.round(220 + t*(67-220));
+        return `rgb(${rv},${gv},${bv})`;
       }
     }
 
-    const paths=geo.features.map(f=>{
-      const name=f.properties.name;
-      const d=countryMap[name];
-      const fill=getColor(name);
-      return `<path d="${pathFromFeature(f)}" fill="${fill}" stroke="${isDark?'#3a4150':'#c8c0b8'}" stroke-width=".4"
-        data-country="${name}" data-users="${d?d.users:0}" data-eng="${d?d.eng:'—'}" data-time="${d?d.time:'—'}"/>`;
+    const stroke = isDark ? '#3a4150' : '#d4cdc5';
+    const ocean  = isDark ? '#1a1e24' : '#e0f0f8';
+
+    const paths = geo.features.map(f => {
+      const name = f.properties.name;
+      const d = ga4Lookup[name];
+      const fill = getColor(name);
+      const title = d && d.users > 0
+        ? `${name}: ${fmt(d.users)} users, ${d.eng}% engaged, ${d.time} avg`
+        : name;
+      return `<path d="${toPath(f)}" fill="${fill}" stroke="${stroke}" stroke-width=".35"
+        data-name="${name}" data-users="${d?d.users:0}" data-eng="${d?d.eng:'—'}" data-time="${d?d.time:'—'}"
+        style="cursor:${d&&d.users>0?'pointer':'default'}"/>`;
     }).join('');
 
-    mapEl.innerHTML=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">${paths}</svg>`;
+    mapEl.innerHTML = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="background:${ocean}">${paths}</svg>`;
 
-    mapEl.querySelectorAll('path').forEach(p=>{
-      p.addEventListener('mouseenter',e=>{
-        const users=parseInt(p.dataset.users)||0;
-        if(users>0) p.style.opacity='.75';
-        tip.style.display='block';
-        tip.innerHTML=`<strong>${p.dataset.country}</strong>${users>0?`${fmt(users)} users · ${p.dataset.eng}% engaged · ${p.dataset.time} avg`:'No data'}`;
+    const tip = document.getElementById('mtt');
+    mapEl.querySelectorAll('path').forEach(p => {
+      p.addEventListener('mouseenter', () => {
+        if (parseInt(p.dataset.users) > 0) p.style.opacity = '.72';
+        tip.style.display = 'block';
+        tip.innerHTML = `<strong>${p.dataset.name}</strong>${parseInt(p.dataset.users)>0
+          ? `${fmt(parseInt(p.dataset.users))} users &middot; ${p.dataset.eng}% engaged &middot; ${p.dataset.time} avg`
+          : 'No data'}`;
       });
-      p.addEventListener('mousemove',e=>{
-        tip.style.left=(e.clientX+12)+'px';
-        tip.style.top=(e.clientY-8)+'px';
+      p.addEventListener('mousemove', e => {
+        tip.style.left = (e.clientX+14)+'px';
+        tip.style.top  = (e.clientY-10)+'px';
       });
-      p.addEventListener('mouseleave',()=>{
-        p.style.opacity='1';
-        tip.style.display='none';
-      });
+      p.addEventListener('mouseleave', () => { p.style.opacity='1'; tip.style.display='none'; });
     });
   } catch(err) {
-    mapEl.innerHTML='<p style="color:var(--muted);font-size:.84rem">Map unavailable</p>';
+    mapEl.innerHTML = '<p style="color:var(--muted);padding:20px;font-size:.84rem">Map unavailable</p>';
+    console.error('Map error:', err);
   }
 }
 
 // ============================================================ COUNTRY TABLE
-let countriesSorted=[];
+let ctSorted = [];
 function renderCountryTable() {
-  if(!GA||!GA.countries) return;
-  countriesSorted=[...GA.countries];
-  applySortAndRender();
+  if (!GA||!GA.countries) return;
+  ctSorted = [...GA.countries];
+  renderCT();
 }
-function sortTable(col) {
-  if(sortCol===col) sortDir=sortDir==='desc'?'asc':'desc';
+function srt(col) {
+  if (sortCol===col) sortDir = sortDir==='desc'?'asc':'desc';
   else { sortCol=col; sortDir='desc'; }
-  document.querySelectorAll('.tbl th').forEach(th=>{
-    th.classList.toggle('sorted',th.dataset.col===col);
-    if(th.dataset.col===col) th.querySelector('.sort-arrow').textContent=sortDir==='desc'?'↓':'↑';
-    else if(th.querySelector('.sort-arrow')) th.querySelector('.sort-arrow').textContent='↕';
+  document.querySelectorAll('.tbl th').forEach(th => {
+    const isSorted = th.dataset.col===col;
+    th.classList.toggle('srt', isSorted);
+    const sa = th.querySelector('.sa');
+    if (sa) sa.textContent = isSorted ? (sortDir==='desc'?'↓':'↑') : '↕';
   });
-  applySortAndRender();
+  renderCT();
 }
-function applySortAndRender() {
-  const sorted=[...countriesSorted].sort((a,b)=>{
+function renderCT() {
+  const sorted = [...ctSorted].sort((a,b) => {
     let va=a[sortCol], vb=b[sortCol];
-    if(sortCol!=='country') { va=parseFloat(va)||0; vb=parseFloat(vb)||0; }
-    if(sortDir==='desc') return va>vb?-1:va<vb?1:0;
-    return va<vb?-1:va>vb?1:0;
+    if (sortCol!=='country') { va=parseFloat(va)||0; vb=parseFloat(vb)||0; }
+    return sortDir==='desc' ? (va>vb?-1:va<vb?1:0) : (va<vb?-1:va>vb?1:0);
   });
-  const max=Math.max(...sorted.map(c=>parseInt(c.activeUsers)||0));
-  document.getElementById('country-tbody').innerHTML=sorted.map((c,i)=>{
+  const max = Math.max(...sorted.map(c=>parseInt(c.activeUsers)||0));
+  document.getElementById('ctbody').innerHTML = sorted.map((c,i) => {
     const u=parseInt(c.activeUsers)||0, w=max?(u/max*50).toFixed(0):0;
     const eng=(parseFloat(c.engagementRate)*100).toFixed(1);
     const t=fmtSecs(parseInt(c.avgEngagementTime)||0);
     return `<tr>
-      <td style="color:var(--muted);width:28px">${i+1}</td>
+      <td style="color:var(--muted)">${i+1}</td>
       <td style="font-weight:700">${c.country}</td>
-      <td><div style="display:flex;align-items:center;gap:7px"><span>${fmt(u)}</span><div style="height:4px;width:${w}px;background:var(--blue);border-radius:2px;opacity:.7"></div></div></td>
+      <td><div style="display:flex;align-items:center;gap:7px"><span>${fmt(u)}</span><div style="height:4px;width:${w}px;background:var(--blue);border-radius:2px;opacity:.65"></div></div></td>
       <td>${fmt(parseInt(c.newUsers)||0)}</td>
       <td>${eng}%</td>
       <td>${t}</td>
@@ -603,129 +795,177 @@ function applySortAndRender() {
 
 // ============================================================ DESIGN TAB
 function renderDesign() {
-  const total=S.totalSessions;
-  function bars(obj,cls,limit) {
-    const entries=Object.entries(obj||{}).sort((a,b)=>b[1]-a[1]).slice(0,limit||20);
-    const max=entries[0]?.[1]||1;
-    return '<div class="bl">'+entries.map(([k,v])=>`
-      <div class="bi">
-        <div class="br"><span class="blabel">${cap(k)}</span><span class="bcount">${fmt(v)} (${pct(v,total)})</span></div>
-        <div class="btrack"><div class="bfill ${cls}" style="width:${(v/max*100).toFixed(0)}%"></div></div>
-      </div>`).join('')+'</div>';
+  if (!RAW) return;
+  const total = ROWS.length;
+
+  // Custom stat: only count rows from customStatStartRow onward
+  const csrStart = (RAW.customStatStartRow || 889) - 1; // 0-indexed in RAW.rows
+  const rowsForCustom = RAW.rows.slice(csrStart);
+  const customUsed    = rowsForCustom.filter(r => String(r[C.CSTAT]).toLowerCase()==='true').length;
+  const customNotUsed = rowsForCustom.length - customUsed;
+  const customTotal   = rowsForCustom.length;
+  const customStats   = {};
+  rowsForCustom.forEach(r => {
+    if (String(r[C.CSTAT]).toLowerCase()==='true' && r[C.CLABEL]) {
+      const l = String(r[C.CLABEL]).trim();
+      if (l) customStats[l] = (customStats[l]||0)+1;
+    }
+  });
+
+  function bars(obj, cls) {
+    const entries = Object.entries(obj||{}).sort((a,b)=>b[1]-a[1]).slice(0,20);
+    const max = entries[0]?.[1]||1;
+    return '<div class="bl">' + entries.map(([k,v]) =>
+      `<div class="bi">
+        <div class="br"><span class="blb">${cap(k)}</span><span class="brc">${fmt(v)} (${pct(v,total)})</span></div>
+        <div class="bt"><div class="bf ${cls}" style="width:${(v/max*100).toFixed(0)}%"></div></div>
+      </div>`
+    ).join('') + '</div>';
   }
-  const customPct=total?((S.customUsed/total)*100).toFixed(1)+'%':'—';
-  const noCustomPct=total?((S.customNotUsed/total)*100).toFixed(1)+'%':'—';
-  document.getElementById('design-grid').innerHTML=`
-    <div class="box"><h3>Ink Color</h3>${bars(S.inkColors,'')}</div>
-    <div class="box"><h3>Cover Type</h3>${bars(S.coverTypes,'b')}</div>
-    <div class="box"><h3>OS Breakdown</h3>${bars(S.osBreakdown,'g')}</div>
+
+  // Count from ROWS for ink/cover/os
+  const inkCounts={}, coverCounts={}, osCounts={};
+  ROWS.forEach(r => {
+    const ink=String(r[C.INK]).trim().toLowerCase();
+    if(ink&&ink!=='undefined') inkCounts[ink]=(inkCounts[ink]||0)+1;
+    const cov=String(r[C.COVER]).trim().toLowerCase();
+    if(cov&&cov!=='undefined') coverCounts[cov]=(coverCounts[cov]||0)+1;
+    const os=String(r[C.OS]).trim().toLowerCase();
+    if(os&&os!=='undefined'&&os!=='false'&&os!=='true') osCounts[os]=(osCounts[os]||0)+1;
+  });
+
+  document.getElementById('design-grid').innerHTML = `
+    <div class="box"><h3>Ink Color</h3>${bars(inkCounts,'')}</div>
+    <div class="box"><h3>Cover Type</h3>${bars(coverCounts,'b')}</div>
+    <div class="box"><h3>OS Breakdown</h3>${bars(osCounts,'g')}</div>
     <div class="box">
-      <h3>Custom 3rd Stat</h3>
-      <div style="display:flex;gap:8px;margin-bottom:12px">
-        <div style="flex:1;background:var(--surface2);border-radius:7px;padding:10px;text-align:center">
-          <div style="font-size:1.3rem;font-weight:800;color:var(--accent)">${fmt(S.customUsed)}</div>
-          <div style="font-size:.72rem;color:var(--muted);margin-top:3px;font-weight:600">Used (${customPct})</div>
-        </div>
-        <div style="flex:1;background:var(--surface2);border-radius:7px;padding:10px;text-align:center">
-          <div style="font-size:1.3rem;font-weight:800;color:var(--muted)">${fmt(S.customNotUsed)}</div>
-          <div style="font-size:.72rem;color:var(--muted);margin-top:3px;font-weight:600">Not Used (${noCustomPct})</div>
-        </div>
+      <h3>Custom 3rd Stat <span style="font-weight:400;text-transform:none;letter-spacing:0">(since launch)</span></h3>
+      <div class="cs2">
+        <div class="csp"><div class="cspn" style="color:var(--accent)">${fmt(customUsed)}</div><div class="cspl">Used (${pct(customUsed,customTotal)})</div></div>
+        <div class="csp"><div class="cspn" style="color:var(--muted)">${fmt(customNotUsed)}</div><div class="cspl">Not Used (${pct(customNotUsed,customTotal)})</div></div>
       </div>
-      ${Object.keys(S.customStats||{}).length?bars(S.customStats,'y'):'<p style="color:var(--muted);font-size:.83rem">No labels recorded yet</p>'}
+      ${Object.keys(customStats).length ? bars(customStats,'y') : '<p style="color:var(--muted);font-size:.83rem">No labels yet</p>'}
     </div>`;
 }
 
 // ============================================================ BOOKS TAB
 function renderBooks() {
-  const books=S.allBooks||[];
-  if(!books.length) { document.getElementById('books-content').innerHTML='<p style="color:var(--muted)">No books logged yet</p>'; return; }
-  const top20=books.slice(0,20), rest=books.slice(20);
-  const max=books[0]?.count||1;
+  if (!RAW) return;
+  // Count from ALL rows (not filtered) for the all-time book list
+  const bookCounts = {};
+  RAW.rows.forEach(r => {
+    if (String(r[C.HASTITLE]).toLowerCase()==='true' && r[C.TITLE]) {
+      const t = String(r[C.TITLE]).trim();
+      if (t && t !== 'undefined' && !t.includes('@')) bookCounts[t] = (bookCounts[t]||0)+1;
+    }
+  });
+  const allBooks = Object.entries(bookCounts).sort((a,b)=>b[1]-a[1]);
+  const top20 = allBooks.slice(0,20), rest = allBooks.slice(20);
+  const max = allBooks[0]?.[1]||1;
 
-  function bookBar(b,i,highlight) {
-    return `<div class="bi" style="${highlight?'':'opacity:.75'}">
+  function bRow(title, count, i, highlight) {
+    return `<div class="bi" style="opacity:${highlight?1:.75}">
       <div class="br">
-        <span class="blabel" style="max-width:360px;font-weight:${highlight?700:500}">${i+1}. ${b.title}</span>
-        <span class="bcount">${b.count} session${b.count!==1?'s':''}</span>
+        <span class="blb" style="max-width:380px;font-weight:${highlight?700:500}">${i+1}. ${esc(title)}</span>
+        <span class="brc">${count}×</span>
       </div>
-      <div class="btrack"><div class="bfill" style="width:${(b.count/max*100).toFixed(0)}%"></div></div>
+      <div class="bt"><div class="bf" style="width:${(count/max*100).toFixed(0)}%"></div></div>
     </div>`;
   }
 
-  document.getElementById('books-content').innerHTML=`
-    <div class="book-highlight" style="margin-bottom:14px">
-      <h4>Top 20 Books</h4>
-      <div class="bl">${top20.map((b,i)=>bookBar(b,i,true)).join('')}</div>
+  document.getElementById('books-content').innerHTML = `
+    <div class="bhl mb">
+      <h4>Top 20 Books (${fmt(top20.length)})</h4>
+      <div class="bl">${top20.map(([t,c],i)=>bRow(t,c,i,true)).join('')}</div>
     </div>
-    ${rest.length?`<div class="box"><h3>All Other Books (${rest.length})</h3><div class="bl">${rest.map((b,i)=>bookBar(b,i+20,false)).join('')}</div></div>`:''}`;
+    ${rest.length ? `
+    <div class="box">
+      <h3>All Other Books (${fmt(rest.length)})</h3>
+      <div class="ball">${rest.map(([t])=>`<span class="btag">${esc(t)}</span>`).join('')}</div>
+    </div>` : ''}`;
 }
 
 // ============================================================ CHART HELPER
 function cc() {
   return {
-    accent:'#d25343', accentBg:'rgba(210,83,67,.12)',
+    accent:'#d25343', accentBg:'rgba(210,83,67,.1)',
     blue:isDark?'#4a9eff':'#2563a8', green:isDark?'#4caf82':'#2d8a5e',
     yellow:isDark?'#f0b429':'#c47d0e', purple:isDark?'#a78bfa':'#6d28d9',
-    muted:isDark?'#7a8794':'#9aa4ae', grid:isDark?'rgba(255,255,255,.05)':'rgba(0,0,0,.05)',
+    muted:'#7a8794', grid:isDark?'rgba(255,255,255,.05)':'rgba(0,0,0,.05)',
     pal:['#d25343',isDark?'#4a9eff':'#2563a8',isDark?'#4caf82':'#2d8a5e',isDark?'#f0b429':'#c47d0e',isDark?'#a78bfa':'#6d28d9']
   };
 }
-function mk(id,type,labels,datasets,opts={}) {
-  if(CH[id]) { CH[id].destroy(); delete CH[id]; }
-  const el=document.getElementById(id); if(!el) return;
-  const C=cc();
-  CH[id]=new Chart(el.getContext('2d'),{
+function mk(id, type, labels, datasets, opts={}) {
+  if (CH[id]) { CH[id].destroy(); delete CH[id]; }
+  const el = document.getElementById(id); if (!el) return;
+  const C2 = cc();
+  CH[id] = new Chart(el.getContext('2d'), {
     type, data:{labels,datasets},
     options:{
       responsive:true, maintainAspectRatio:false,
       plugins:{
-        legend:{display:!!opts.legend,labels:{color:C.muted,font:{size:11,family:'Mulish'},padding:12,boxWidth:10}},
+        legend:{display:!!opts.legend, labels:{color:C2.muted,font:{size:11,family:'Mulish'},padding:12,boxWidth:10}},
         tooltip:{titleFont:{family:'Mulish'},bodyFont:{family:'Mulish'}}
       },
-      scales:type==='doughnut'||type==='pie'?undefined:{
-        x:{ticks:{color:C.muted,maxTicksLimit:opts.maxX||8,font:{size:10,family:'Mulish'}},grid:{color:C.grid,display:opts.xGrid!==false}},
-        y:{ticks:{color:C.muted,font:{size:10,family:'Mulish'}},grid:{color:C.grid}}
+      scales: type==='doughnut'||type==='pie' ? undefined : {
+        x:{ticks:{color:C2.muted,maxTicksLimit:opts.maxX||10,font:{size:10,family:'Mulish'}},grid:{color:C2.grid,display:opts.xGrid!==false}},
+        y:{ticks:{color:C2.muted,font:{size:10,family:'Mulish'}},grid:{color:C2.grid}}
       },
       ...(opts.extra||{})
     }
   });
 }
 
-// ============================================================ TABS
+// ============================================================ TABS / FILTERS
 function goTab(name) {
   document.querySelectorAll('.pane').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
   document.getElementById('tab-'+name).classList.add('on');
   document.querySelector('[data-tab="'+name+'"]').classList.add('on');
 }
-
-// ============================================================ FILTERS
 function onPeriod() {
   const v=document.getElementById('period').value, c=v==='custom';
   document.getElementById('d-from').style.display=c?'inline-block':'none';
   document.getElementById('d-sep').style.display=c?'inline':'none';
   document.getElementById('d-to').style.display=c?'inline-block':'none';
 }
-function resetFilters() { document.getElementById('period').value='all'; onPeriod(); loadAll(); }
+function resetFilters() { document.getElementById('period').value='all'; onPeriod(); applyFilter(); }
 
 // ============================================================ EXPORT
 function exportReport() {
-  if(!S) return;
-  const lines=['StoryStats Dashboard Report','Generated: '+new Date().toLocaleString(),'',
+  const s = calcStats(ROWS);
+  const lines = [
+    'StoryStats Dashboard Report', 'Generated: '+new Date().toLocaleString(),
+    'Period: '+document.getElementById('period').options[document.getElementById('period').selectedIndex].text,'',
     '=== OVERVIEW ===',
-    'Total Sessions: '+fmt(S.totalSessions), 'Pages Read: '+fmt(S.totalPages),
-    'Hours Read: '+fmt(S.totalHours), 'Books Finished: '+fmt(S.booksFinished),
-    'Avg Pages/Session: '+S.avgPages, 'Median Pages/Session: '+S.medianPages,
-    'Avg Duration: '+S.avgMins+' min', 'Median Duration: '+S.medianMins+' min','',
+    'Total Sessions: '+fmt(s.totalSessions), 'Pages Read: '+fmt(s.totalPages),
+    'Hours Read: '+fmt(s.totalHours), 'Books Finished: '+fmt(s.booksFinished),
+    'Avg Pages/Session: '+s.avgPages, 'Median Pages: '+s.medianPages,
+    'Avg Duration: '+s.avgMins+' min', 'Median Duration: '+s.medianMins+' min',''
   ];
-  if(EV&&!EV.error) lines.push(
-    '=== EMAIL FUNNEL ===',
-    'Saw Prompt: '+fmt(EV.ss_email_modal_shown),
-    'Submitted Email: '+fmt(EV.ss_email_signup),
-    'Skipped: '+fmt(EV.ss_email_skipped),'',
+  if (EV) lines.push('=== EMAIL FUNNEL ===',
+    'Saw Prompt: '+fmt(EV.ss_email_modal_shown||0),
+    'Submitted: '+fmt(EV.ss_email_signup||0),
+    'Opted In: '+fmt(EV.ss_email_opted_in||0),
+    'Skipped: '+fmt(EV.ss_email_skipped||0),''
   );
-  if(S.allBooks) { lines.push('=== TOP 20 BOOKS ==='); S.allBooks.slice(0,20).forEach((b,i)=>lines.push(`${i+1}. ${b.title} (${b.count})`)); lines.push(''); }
-  if(GA&&GA.countries) { lines.push('=== TOP 15 COUNTRIES ==='); GA.countries.slice(0,15).forEach((c,i)=>lines.push(`${i+1}. ${c.country}: ${fmt(parseInt(c.activeUsers))} users`)); }
+  if (RAW) {
+    const bookCounts={};
+    RAW.rows.forEach(r=>{
+      if(String(r[C.HASTITLE]).toLowerCase()==='true'&&r[C.TITLE]){
+        const t=String(r[C.TITLE]).trim();
+        if(t&&t!=='undefined'&&!t.includes('@')) bookCounts[t]=(bookCounts[t]||0)+1;
+      }
+    });
+    const books=Object.entries(bookCounts).sort((a,b)=>b[1]-a[1]);
+    lines.push('=== TOP 20 BOOKS ===');
+    books.slice(0,20).forEach(([t,c],i)=>lines.push(`${i+1}. ${t} (${c}x)`));
+    lines.push('');
+  }
+  if (GA&&GA.countries) {
+    lines.push('=== TOP 15 COUNTRIES (GA4) ===');
+    GA.countries.slice(0,15).forEach((c,i)=>lines.push(`${i+1}. ${c.country}: ${fmt(parseInt(c.activeUsers))} users`));
+  }
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([lines.join('\n')],{type:'text/plain'}));
   a.download='storystats-'+new Date().toISOString().slice(0,10)+'.txt';
@@ -733,11 +973,12 @@ function exportReport() {
 }
 
 // ============================================================ HELPERS
-function fmt(n) { return (parseInt(n)||0).toLocaleString(); }
-function cap(s) { return s?s.charAt(0).toUpperCase()+s.slice(1):s; }
-function pct(n,t) { return t?((n/t)*100).toFixed(1)+'%':'—'; }
-function topN(obj,n) { return Object.entries(obj||{}).sort((a,b)=>b[1]-a[1]).slice(0,n); }
-function fmtSecs(s) { return s>=60?Math.floor(s/60)+'m '+s%60+'s':s+'s'; }
+function fmt(n)    { return (parseInt(n)||0).toLocaleString(); }
+function cap(s)    { return s?s.charAt(0).toUpperCase()+s.slice(1):s; }
+function pct(n,t)  { return t&&parseInt(t)>0?((parseInt(n)||0)/(parseInt(t))*100).toFixed(1)+'%':'—'; }
+function fmtSecs(s){ return s>=60?Math.floor(s/60)+'m '+(s%60)+'s':s+'s'; }
+function esc(s)    { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function median(a) { const s=[...a].sort((x,y)=>x-y),m=Math.floor(s.length/2); return s.length%2?s[m]:Math.round((s[m-1]+s[m])/2); }
 </script>
 </body>
 </html>
