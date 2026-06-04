@@ -339,6 +339,13 @@ async function loadAll() {
   document.getElementById('stat-cards').innerHTML = '<div class="ld"><div class="sp"></div></div>';
   [RAW, GA, EV] = await Promise.all([fetchJ('rows'), fetchJ('ga4'), fetchJ('events')]);
 
+  // DEBUG -- remove after confirming Indonesia
+  console.log('GA object keys:', GA ? Object.keys(GA) : 'null');
+  console.log('Countries count:', GA && GA.countries ? GA.countries.length : 'none');
+  if (GA && GA.countries && GA.countries.length > 0) {
+    console.log('First 5 countries:', GA.countries.slice(0,5).map(x=>x.country+':'+x.activeUsers));
+  }
+
   if (RAW && !RAW.error) {
     if (RAW.lastUpdated) {
       document.getElementById('upd').textContent = 'Updated ' +
