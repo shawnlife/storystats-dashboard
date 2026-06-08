@@ -48,6 +48,7 @@ header h1{font-size:1rem;font-weight:800;}header h1 span{color:var(--accent);}
 .btn-p{background:var(--accent);color:#fff;}
 .btn-p:hover{background:var(--accent2);}
 .btn-sq{width:30px;height:30px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:7px;background:var(--surface2);border:1px solid var(--border);cursor:pointer;font-size:.95rem;transition:border-color .15s;}
+.btn:disabled{opacity:.55;cursor:not-allowed;}
 
 /* FILTERS */
 .filters{padding:9px 28px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
@@ -79,13 +80,6 @@ header h1{font-size:1rem;font-weight:800;}header h1 span{color:var(--accent);}
 .box{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:17px;box-shadow:var(--shadow);}
 .box h3{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;font-weight:700;margin-bottom:13px;}
 .cw{position:relative;}
-
-/* EMAIL FUNNEL */
-.ef{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px;}
-.efs{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;text-align:center;box-shadow:var(--shadow);}
-.efn{font-size:1.5rem;font-weight:800;color:var(--accent);}
-.efl{font-size:.68rem;color:var(--muted);margin-top:3px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
-.efp{font-size:.8rem;font-weight:700;margin-top:3px;color:var(--text);}
 
 /* GRIDS */
 .g21{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px;}
@@ -119,8 +113,6 @@ header h1{font-size:1rem;font-weight:800;}header h1 span{color:var(--accent);}
 .tbl tr:hover td{background:var(--surface2);}
 .ox{overflow-x:auto;}
 
-
-
 /* SECTION HEADING */
 .sh{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;font-weight:700;margin:18px 0 10px;}
 
@@ -142,13 +134,26 @@ header h1{font-size:1rem;font-weight:800;}header h1 span{color:var(--accent);}
 @keyframes spin{to{transform:rotate(360deg);}}
 
 /* TOOLTIP */
-.tip-label{font-size:.72rem;color:var(--muted);font-weight:600;display:flex;align-items:center;gap:5px;cursor:help;border-bottom:1px dashed var(--muted);width:fit-content;}
-.tip-label:hover{color:var(--text);}
+.tip-wrap{position:relative;display:inline-flex;align-items:center;}
+.tip-icon{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);font-size:.65rem;color:var(--muted);cursor:help;font-weight:700;flex-shrink:0;}
+.tip-icon:hover{background:var(--border);color:var(--text);}
+.tip-pop{display:none;position:absolute;left:50%;transform:translateX(-50%);bottom:calc(100% + 8px);background:var(--text);color:var(--surface);font-size:.75rem;font-weight:500;padding:8px 11px;border-radius:7px;width:240px;line-height:1.45;z-index:999;pointer-events:none;box-shadow:0 4px 14px rgba(0,0,0,.18);}
+.tip-pop::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--text);}
+.tip-wrap:hover .tip-pop{display:block;}
+
+/* INTERACTIONS SECTION DIVIDERS */
+.isec{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.9px;font-weight:700;padding:10px 0 8px;border-bottom:1px solid var(--border);margin-bottom:12px;}
+
+/* STAT ROW */
+.stat-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);}
+.stat-row:last-child{border-bottom:none;}
+.stat-label{font-size:.82rem;font-weight:600;color:var(--text);}
+.stat-val{font-size:.82rem;font-weight:700;color:var(--accent);}
+.stat-sub{font-size:.7rem;color:var(--muted);margin-top:1px;}
 
 @media(max-width:900px){
-  .g21,.g2,.g3{grid-template-columns:1fr;}
+  .g21,.g2,.g3,.ga{grid-template-columns:1fr;}
   header,.filters,.content{padding-left:14px;padding-right:14px;}
-  .ef{grid-template-columns:1fr 1fr;}
   .upd{display:none;}
 }
 </style>
@@ -168,7 +173,7 @@ header h1{font-size:1rem;font-weight:800;}header h1 span{color:var(--accent);}
     <div class="hl"><div class="hi">SS</div><h1>Story<span>Stats</span> Dashboard</h1></div>
     <div class="hr">
       <span class="upd" id="upd"></span>
-      <button class="btn btn-o" onclick="applyFilter()">↻ Refresh</button>
+      <button class="btn btn-o" id="refresh-btn" onclick="doRefresh()">↻ Refresh</button>
       <button class="btn btn-p" onclick="exportReport()">↓ Export</button>
       <button class="btn-sq" id="tbtn" onclick="toggleTheme()">🌙</button>
     </div>
@@ -197,16 +202,13 @@ header h1{font-size:1rem;font-weight:800;}header h1 span{color:var(--accent);}
     <div class="tabs">
       <button class="tab on" data-tab="overview" onclick="goTab('overview')">Overview</button>
       <button class="tab" data-tab="audience" onclick="goTab('audience')">Audience</button>
-      <button class="tab" data-tab="design" onclick="goTab('design')">Card Design</button>
+      <button class="tab" data-tab="interactions" onclick="goTab('interactions')">Interactions</button>
       <button class="tab" data-tab="books" onclick="goTab('books')">Books</button>
     </div>
 
     <!-- OVERVIEW -->
     <div class="pane on" id="tab-overview">
       <div class="cards" id="stat-cards"><div class="ld"><div class="sp"></div></div></div>
-
-      <div class="sh">Email Capture <span style="font-weight:400;text-transform:none;letter-spacing:0">(GA4 — all time, not affected by period filter)</span></div>
-      <div class="ef" id="email-funnel"><div class="ld"><div class="sp"></div></div></div>
 
       <div class="g21">
         <div class="box">
@@ -249,7 +251,10 @@ header h1{font-size:1rem;font-weight:800;}header h1 span{color:var(--accent);}
         <div class="box">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:13px">
             <h3 style="margin-bottom:0">Channel Engagement Rate</h3>
-            <span style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);font-size:.65rem;color:var(--muted);cursor:help;font-weight:700" title="Engagement rate = % of sessions where the user was active for 10+ seconds, triggered a conversion event, or viewed 2+ pages. Higher means more meaningful visits from that channel.">?</span>
+            <div class="tip-wrap">
+              <span class="tip-icon">?</span>
+              <div class="tip-pop">Engagement rate is the percentage of sessions where the user was actively engaged — defined by Google as sessions lasting 10+ seconds, having a conversion event, or having 2 or more page views. Higher means more meaningful visits from that channel.</div>
+            </div>
           </div>
           <div class="cw" style="height:200px"><canvas id="c-ch"></canvas></div>
         </div>
@@ -274,9 +279,9 @@ header h1{font-size:1rem;font-weight:800;}header h1 span{color:var(--accent);}
       </div>
     </div>
 
-    <!-- DESIGN -->
-    <div class="pane" id="tab-design">
-      <div class="ga" id="design-grid"><div class="ld"><div class="sp"></div></div></div>
+    <!-- INTERACTIONS -->
+    <div class="pane" id="tab-interactions">
+      <div class="ga" id="interactions-grid"><div class="ld"><div class="sp"></div></div></div>
     </div>
 
     <!-- BOOKS -->
@@ -291,15 +296,12 @@ const ASURL = 'https://script.google.com/macros/s/AKfycbwac7tO8AC78x6RREQ0vWlHtt
 const PW = 'Meridian47Foxglove';
 
 // State
-let RAW = null;   // {headers, rows, customStatStartRow, lastUpdated}
-let GA  = null;   // ga4 cache data
-let EV  = null;   // events cache
-let ROWS = [];    // filtered rows (subset of RAW.rows)
+let RAW = null, GA = null, EV = null, ROWS = [];
 let isDark = false, gran = 'month';
 let sortCol = 'activeUsers', sortDir = 'desc';
-const CH = {};    // chart instances
+const CH = {};
 
-// Column indices (matching COLS in Apps Script)
+// Column indices
 const C = {TS:0,DATE:1,TIME:2,PAGES:3,HRS:4,MINS:5,TMINS:6,PCT:7,TPAGES:8,
            FIN:9,TITLE:10,HASTITLE:11,INK:12,COVER:13,USEBG:14,BG:15,
            DEVICE:16,OS:17,SRC:18,RET:19,CSTAT:20,CLABEL:21,CVAL:22};
@@ -323,7 +325,7 @@ function toggleTheme() {
   document.documentElement.setAttribute('data-theme', isDark ? 'dark' : '');
   document.getElementById('tbtn').textContent = isDark ? '☀️' : '🌙';
   renderOverviewCharts();
-  if (GA) { renderChannelChart(); renderMap(); }
+  if (GA) { renderChannelChart(); }
 }
 
 // ============================================================ DATA LOADING
@@ -344,10 +346,26 @@ async function loadAll() {
       document.getElementById('upd').textContent = 'Updated ' +
         new Date(RAW.lastUpdated).toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
     }
-    applyFilter(); // this sets ROWS and renders overview + design + books
+    applyFilter();
   }
-  if (EV && !EV.error) renderEmailFunnel();
   if (GA && !GA.error) { renderGA4Cards(); renderCountryTable(); renderChannelBars(); renderChannelChart(); renderReturning(); }
+}
+
+// ============================================================ REFRESH
+async function doRefresh() {
+  const btn = document.getElementById('refresh-btn');
+  btn.disabled = true;
+  btn.textContent = '↻ Running...';
+  try {
+    await fetchJ('refresh'); // triggers dedup + GA4 pull server-side
+    btn.textContent = '↻ Reloading...';
+    await loadAll();
+    btn.textContent = '↻ Done!';
+    setTimeout(() => { btn.textContent = '↻ Refresh'; btn.disabled = false; }, 2000);
+  } catch(e) {
+    btn.textContent = '↻ Refresh';
+    btn.disabled = false;
+  }
 }
 
 // ============================================================ FILTERING
@@ -371,7 +389,6 @@ function getDateRange() {
 }
 
 function parseRowDate(row) {
-  // Use timestamp column (UTC) for filtering
   const ts = String(row[C.TS]);
   if (!ts || ts === 'undefined') return null;
   try {
@@ -402,7 +419,7 @@ function applyFilter() {
 
   renderCards();
   renderOverviewCharts();
-  renderDesign();
+  renderInteractions();
   renderBooks();
 }
 
@@ -433,73 +450,27 @@ function renderCards() {
   const s = calcStats(ROWS);
   const rawTotal = RAW ? RAW.rows.length : 0;
   const dedupedTotal = s.totalSessions;
-  const removedTotal = rawTotal - dedupedTotal;
-  // Estimate books from pages (avg book ~300 pages)
+  const downloads = EV ? (EV.ss_download || 0) : 0;
+  const dupePct = downloads > 0 ? ((downloads - dedupedTotal) / downloads * 100).toFixed(1) : 0;
   const estBooks = Math.round(s.totalPages / 300);
-  // Days read
   const totalDays = Math.round(s.totalHours / 24 * 10) / 10;
 
   const cards = [
     {
       l: 'Sessions',
       v: fmt(dedupedTotal), c: 'a',
-      sub: (() => {
-        const downloads = EV ? (EV.ss_download || 0) : 0;
-        const dupePct = downloads > 0 ? ((downloads - dedupedTotal) / downloads * 100).toFixed(1) : 0;
-        return downloads > 0
-          ? fmt(downloads) + ' raw downloads · ' + dupePct + '% deduped'
-          : fmt(rawTotal) + ' raw · ' + fmt(removedTotal) + ' dupes removed';
-      })()
+      sub: downloads > 0
+        ? fmt(downloads) + ' downloads · ' + dupePct + '% deduped'
+        : fmt(rawTotal) + ' raw · ' + fmt(rawTotal - dedupedTotal) + ' dupes removed'
     },
-    {
-      l: 'Pages Read',
-      v: fmt(s.totalPages), c: 'b',
-      sub: '≈ ' + fmt(estBooks) + ' books (avg 300 pages)'
-    },
-    {
-      l: 'Time Reading',
-      v: fmt(s.totalHours) + ' hrs', c: 'g',
-      sub: totalDays + ' days of reading'
-    },
-    {
-      l: 'Books Finished',
-      v: fmt(s.booksFinished), c: 'a',
-      sub: 'marked 100% complete'
-    },
-    {
-      l: 'Avg / Median Pages',
-      v: fmt(s.avgPages), c: 't',
-      sub: 'median: ' + fmt(s.medianPages) + ' pages'
-    },
-    {
-      l: 'Avg / Median Duration',
-      v: s.avgMins + ' min', c: 't',
-      sub: 'median: ' + s.medianMins + ' min'
-    },
+    { l:'Pages Read',         v:fmt(s.totalPages),         c:'b', sub:'≈ '+fmt(estBooks)+' books (avg 300 pages)' },
+    { l:'Time Reading',       v:fmt(s.totalHours)+' hrs',  c:'g', sub:totalDays+' days of reading' },
+    { l:'Books Finished',     v:fmt(s.booksFinished),      c:'a', sub:'marked 100% complete' },
+    { l:'Avg / Median Pages', v:fmt(s.avgPages),           c:'t', sub:'median: '+fmt(s.medianPages)+' pages' },
+    { l:'Avg / Median Duration', v:s.avgMins+' min',       c:'t', sub:'median: '+s.medianMins+' min' },
   ];
   document.getElementById('stat-cards').innerHTML = cards.map(c=>
     `<div class="card"><div class="cl">${c.l}</div><div class="cv ${c.c}">${c.v}</div><div class="cs">${c.sub}</div></div>`
-  ).join('');
-}
-
-// ============================================================ EMAIL FUNNEL (GA4 only, no filter)
-function renderEmailFunnel() {
-  const shown   = EV.ss_email_modal_shown || 0;
-  const signup  = EV.ss_email_signup      || 0;
-  const skipped = EV.ss_email_skipped     || 0;
-  // opted in/out comes from the email capture sheet (column C), not GA4 parameters
-  const optIn   = EV.email_opted_in       || 0;
-  const optOut  = EV.email_opted_out      || 0;
-  const total   = EV.email_total          || (optIn + optOut);
-  const steps = [
-    {n:fmt(shown),   l:'Saw Prompt',      p:'100%',              sub:'modal displayed'},
-    {n:fmt(signup),  l:'Submitted Email', p:pct(signup,shown),   sub:'of those who saw it'},
-    {n:fmt(skipped), l:'Skipped',         p:pct(skipped,shown),  sub:'of those who saw it'},
-    {n:fmt(optIn),   l:'Opted In',        p:pct(optIn,total),    sub:'of emails submitted'},
-    {n:fmt(optOut),  l:'Opted Out',       p:pct(optOut,total),   sub:'of emails submitted'},
-  ];
-  document.getElementById('email-funnel').innerHTML = steps.map(s=>
-    `<div class="efs"><div class="efn">${s.n}</div><div class="efl">${s.l}</div><div class="efp">${s.p}</div><div style="font-size:.67rem;color:var(--muted);margin-top:2px">${s.sub}</div></div>`
   ).join('');
 }
 
@@ -508,7 +479,6 @@ function renderOverviewCharts() {
   renderTrend(); renderDevice(); renderTOD();
 }
 
-// Trend chart
 function setGran(g) {
   gran = g;
   document.getElementById('btn-day').classList.toggle('on', g==='day');
@@ -520,16 +490,14 @@ function renderTrend() {
   const C2 = cc();
   let entries;
   if (gran === 'day') {
-    // daily counts from ROWS, sorted
     const counts = {};
     ROWS.forEach(r => {
       const d = parseRowDate(r);
       if (!d) return;
-      const key = d.toISOString().slice(0,10); // YYYY-MM-DD
+      const key = d.toISOString().slice(0,10);
       counts[key] = (counts[key]||0) + 1;
     });
     entries = Object.entries(counts).sort((a,b) => a[0].localeCompare(b[0]));
-    // format label as "May 4"
     const labels = entries.map(([k]) => {
       const d = new Date(k+'T00:00:00');
       return d.toLocaleDateString('en-US', {month:'short', day:'numeric'});
@@ -540,7 +508,6 @@ function renderTrend() {
       borderWidth: 2, pointRadius: 0, fill: true, tension: 0.3
     }]);
   } else {
-    // monthly counts from ROWS
     const counts = {};
     ROWS.forEach(r => {
       const d = parseRowDate(r);
@@ -592,10 +559,15 @@ function renderTOD() {
   });
   const total = Object.values(tod).reduce((a,b)=>a+b,0);
   const keys = Object.keys(tod);
+  const counts = keys.map(k => tod[k]);
+  const minVal = 350; // floor for y-axis so differences are visible
   mk('c-tod','bar',
     keys.map(k => k + ' (' + pct(tod[k],total) + ')'),
-    [{data: keys.map(k=>tod[k]), backgroundColor:[C2.yellow+'cc',C2.accent+'cc',C2.blue+'cc',C2.purple+'cc'], borderRadius:4, borderSkipped:false}],
-    {xGrid:false}
+    [{data: counts, backgroundColor:[C2.yellow+'cc',C2.accent+'cc',C2.blue+'cc',C2.purple+'cc'], borderRadius:4, borderSkipped:false}],
+    {xGrid:false, extra:{scales:{
+      y:{min: minVal, ticks:{color:C2.muted,font:{size:10}},grid:{color:C2.grid}},
+      x:{ticks:{color:C2.muted,font:{size:10}},grid:{display:false}}
+    }}}
   );
 }
 
@@ -666,125 +638,6 @@ function renderChannelChart() {
   );
 }
 
-// ============================================================ WORLD MAP
-// GA4 country names don't always match GeoJSON names -- map the known mismatches
-// Maps GA4 country names -> GeoJSON feature names
-const COUNTRY_NAME_MAP = {
-  'United States':          'United States of America',
-  'Türkiye':                'Turkey',
-  'Czechia':                'Czech Republic',
-  'Tanzania':               'United Republic of Tanzania',
-  'Bosnia & Herzegovina':   'Bosnia and Herzegovina',
-  'Trinidad & Tobago':      'Trinidad and Tobago',
-  'North Macedonia':        'Macedonia',
-  'Timor-Leste':            'East Timor',
-  'Congo':                  'Republic of the Congo',
-  'DR Congo':               'Democratic Republic of the Congo',
-  "Côte d'Ivoire":          "Côte d'Ivoire",
-  'Ivory Coast':            "Côte d'Ivoire",
-  'Laos':                   'Lao PDR',
-  'South Korea':            'South Korea',
-  'North Korea':            'North Korea',
-  'Russia':                 'Russia',
-  'Venezuela':              'Venezuela',
-  'Bolivia':                'Bolivia',
-  'Syria':                  'Syria',
-  'Myanmar':                'Myanmar',
-  'Vietnam':                'Vietnam',
-  'Dominican Republic':     'Dominican Republic',
-};
-
-async function renderMap() {
-  if (!GA||!GA.countries||!GA.countries.length) return;
-  const mapEl = document.getElementById('wmap');
-  mapEl.innerHTML = '<div class="ld"><div class="sp"></div><span>Loading map...</span></div>';
-
-  try {
-    const r = await fetch('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson');
-    const geo = await r.json();
-
-    // Build lookup: both original GA4 name AND mapped GeoJSON name -> user data
-    const ga4Lookup = {};
-    GA.countries.forEach(c => {
-      const data = { users: parseInt(c.activeUsers)||0, eng: (parseFloat(c.engagementRate)*100).toFixed(1), time: fmtSecs(parseInt(c.avgEngagementTime)||0) };
-      ga4Lookup[c.country] = data;                              // original GA4 name
-      const mapped = COUNTRY_NAME_MAP[c.country];
-      if (mapped) ga4Lookup[mapped] = data;                     // mapped GeoJSON name
-    });
-
-    const maxU = Math.max(...Object.values(ga4Lookup).map(d=>d.users));
-    const W = mapEl.clientWidth || 900, H = 300;
-
-    function project(lon, lat) {
-      return [(lon + 180) * (W / 360), (90 - lat) * (H / 180)];
-    }
-    function toPath(feature) {
-      const polys = feature.geometry.type === 'Polygon'
-        ? [feature.geometry.coordinates]
-        : feature.geometry.coordinates;
-      return polys.map(poly =>
-        poly[0].map((p,i) => {
-          const [x,y] = project(p[0], p[1]);
-          return (i===0?'M':'L') + x.toFixed(1) + ',' + y.toFixed(1);
-        }).join(' ') + 'Z'
-      ).join(' ');
-    }
-    function getColor(name) {
-      const d = ga4Lookup[name];
-      if (!d || d.users === 0) return isDark ? '#2d3340' : '#e8e4de';
-      const t = Math.pow(d.users / maxU, 0.4); // power scale so small countries still show
-      // Interpolate from light to accent color
-      if (isDark) {
-        const rv = Math.round(45 + t*(210-45));
-        const gv = Math.round(50 + t*(83-50));
-        const bv = Math.round(60 + t*(67-60));
-        return `rgb(${rv},${gv},${bv})`;
-      } else {
-        const rv = Math.round(240 + t*(210-240));
-        const gv = Math.round(230 + t*(83-230));
-        const bv = Math.round(220 + t*(67-220));
-        return `rgb(${rv},${gv},${bv})`;
-      }
-    }
-
-    const stroke = isDark ? '#3a4150' : '#d4cdc5';
-    const ocean  = isDark ? '#1a1e24' : '#e0f0f8';
-
-    const paths = geo.features.map(f => {
-      const name = f.properties.name;
-      const d = ga4Lookup[name];
-      const fill = getColor(name);
-      const title = d && d.users > 0
-        ? `${name}: ${fmt(d.users)} users, ${d.eng}% engaged, ${d.time} avg`
-        : name;
-      return `<path d="${toPath(f)}" fill="${fill}" stroke="${stroke}" stroke-width=".35"
-        data-name="${name}" data-users="${d?d.users:0}" data-eng="${d?d.eng:'—'}" data-time="${d?d.time:'—'}"
-        style="cursor:${d&&d.users>0?'pointer':'default'}"/>`;
-    }).join('');
-
-    mapEl.innerHTML = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="background:${ocean}">${paths}</svg>`;
-
-    const tip = document.getElementById('mtt');
-    mapEl.querySelectorAll('path').forEach(p => {
-      p.addEventListener('mouseenter', () => {
-        if (parseInt(p.dataset.users) > 0) p.style.opacity = '.72';
-        tip.style.display = 'block';
-        tip.innerHTML = `<strong>${p.dataset.name}</strong>${parseInt(p.dataset.users)>0
-          ? `${fmt(parseInt(p.dataset.users))} users &middot; ${p.dataset.eng}% engaged &middot; ${p.dataset.time} avg`
-          : 'No data'}`;
-      });
-      p.addEventListener('mousemove', e => {
-        tip.style.left = (e.clientX+14)+'px';
-        tip.style.top  = (e.clientY-10)+'px';
-      });
-      p.addEventListener('mouseleave', () => { p.style.opacity='1'; tip.style.display='none'; });
-    });
-  } catch(err) {
-    mapEl.innerHTML = '<p style="color:var(--muted);padding:20px;font-size:.84rem">Map unavailable</p>';
-    console.error('Map error:', err);
-  }
-}
-
 // ============================================================ COUNTRY TABLE
 let ctSorted = [];
 function renderCountryTable() {
@@ -825,89 +678,179 @@ function renderCT() {
   }).join('');
 }
 
-// ============================================================ DESIGN TAB
-function renderDesign() {
+// ============================================================ INTERACTIONS TAB
+function renderInteractions() {
   if (!RAW) return;
   const total = ROWS.length;
 
-  // Custom stat: only count rows from customStatStartRow onward
-  const csrStart = (RAW.customStatStartRow || 889) - 1; // 0-indexed in RAW.rows
+  // -- Custom stat (since launch row only) --
+  const csrStart = (RAW.customStatStartRow || 889) - 1;
   const rowsForCustom = RAW.rows.slice(csrStart);
   const customUsed    = rowsForCustom.filter(r => String(r[C.CSTAT]).toLowerCase()==='true').length;
   const customNotUsed = rowsForCustom.length - customUsed;
   const customTotal   = rowsForCustom.length;
-  const customStats   = {};
+  const customCounts  = {};
   rowsForCustom.forEach(r => {
     if (String(r[C.CSTAT]).toLowerCase()==='true' && r[C.CLABEL]) {
       const l = String(r[C.CLABEL]).trim();
-      if (l) customStats[l] = (customStats[l]||0)+1;
+      if (l) customCounts[l] = (customCounts[l]||0)+1;
     }
   });
+  const customEntries = Object.entries(customCounts).sort((a,b)=>b[1]-a[1]);
+  const top5Custom    = customEntries.slice(0,5);
+  const restCustom    = customEntries.slice(5);
 
-  function bars(obj, cls) {
-    const entries = Object.entries(obj||{}).sort((a,b)=>b[1]-a[1]).slice(0,20);
-    const max = entries[0]?.[1]||1;
+  // -- Card design counts from ROWS --
+  const inkCounts={}, coverCounts={};
+  let titleEntered=0, bgUsed=0, calcUsed=0;
+  ROWS.forEach(r => {
+    const ink = String(r[C.INK]).trim().toLowerCase();
+    if (ink && ink!=='undefined') inkCounts[ink]=(inkCounts[ink]||0)+1;
+    const cov = String(r[C.COVER]).trim().toLowerCase();
+    if (cov && cov!=='undefined') coverCounts[cov]=(coverCounts[cov]||0)+1;
+    if (String(r[C.HASTITLE]).toLowerCase()==='true') titleEntered++;
+    if (String(r[C.USEBG]).toLowerCase()==='true') bgUsed++;
+    // calculator used = total_pages column is populated
+    const tp = r[C.TPAGES];
+    if (tp !== '' && tp !== null && tp !== undefined && !isNaN(parseFloat(tp))) calcUsed++;
+  });
+
+  // -- OS from ROWS --
+  const osCounts = {};
+  ROWS.forEach(r => {
+    const os = String(r[C.OS]).trim().toLowerCase();
+    if (os && os!=='undefined' && os!=='false' && os!=='true') osCounts[os]=(osCounts[os]||0)+1;
+  });
+
+  // -- GA4 event counts (all-time, from Events Cache) --
+  const evGet = key => EV ? (EV[key] || 0) : 0;
+
+  function miniBar(label, count, total2, cls='') {
+    const max = total2 || 1;
+    return `<div class="bi">
+      <div class="br"><span class="blb">${cap(label)}</span><span class="brc">${fmt(count)} (${pct(count,total2)})</span></div>
+      <div class="bt"><div class="bf ${cls}" style="width:${(count/max*100).toFixed(0)}%"></div></div>
+    </div>`;
+  }
+
+  function barList(obj, cls='', maxRows=20) {
+    const entries = Object.entries(obj).sort((a,b)=>b[1]-a[1]).slice(0,maxRows);
+    const maxVal = entries[0]?.[1]||1;
     return '<div class="bl">' + entries.map(([k,v]) =>
       `<div class="bi">
         <div class="br"><span class="blb">${cap(k)}</span><span class="brc">${fmt(v)} (${pct(v,total)})</span></div>
-        <div class="bt"><div class="bf ${cls}" style="width:${(v/max*100).toFixed(0)}%"></div></div>
+        <div class="bt"><div class="bf ${cls}" style="width:${(v/maxVal*100).toFixed(0)}%"></div></div>
       </div>`
     ).join('') + '</div>';
   }
 
-  // Count from ROWS for ink/cover/os
-  const inkCounts={}, coverCounts={}, osCounts={};
-  ROWS.forEach(r => {
-    const ink=String(r[C.INK]).trim().toLowerCase();
-    if(ink&&ink!=='undefined') inkCounts[ink]=(inkCounts[ink]||0)+1;
-    const cov=String(r[C.COVER]).trim().toLowerCase();
-    if(cov&&cov!=='undefined') coverCounts[cov]=(coverCounts[cov]||0)+1;
-    const os=String(r[C.OS]).trim().toLowerCase();
-    if(os&&os!=='undefined'&&os!=='false'&&os!=='true') osCounts[os]=(osCounts[os]||0)+1;
-  });
+  function statRow(label, val, sub='') {
+    return `<div class="stat-row">
+      <div><div class="stat-label">${label}</div>${sub?`<div class="stat-sub">${sub}</div>`:''}</div>
+      <div class="stat-val">${val}</div>
+    </div>`;
+  }
 
-  // Title entered vs not
-  const titleEntered    = ROWS.filter(r => String(r[C.HASTITLE]).toLowerCase()==='true').length;
-  const titleNotEntered = ROWS.length - titleEntered;
-  const bgUsed    = ROWS.filter(r => String(r[C.USEBG]).toLowerCase()==='true').length;
-  const bgNotUsed = ROWS.length - bgUsed;
+  // Email funnel counts
+  const emailShown   = evGet('ss_email_modal_shown');
+  const emailSignup  = evGet('ss_email_signup');
+  const emailSkipped = evGet('ss_email_skipped');
+  const emailOptIn   = evGet('email_opted_in');
+  const emailOptOut  = evGet('email_opted_out');
+  const emailTotal   = evGet('email_total') || (emailOptIn + emailOptOut);
 
-  document.getElementById('design-grid').innerHTML = `
+  document.getElementById('interactions-grid').innerHTML = `
+
+    <!-- COLUMN 1: Card Design -->
     <div class="box">
-      <h3>Ink Color</h3>${bars(inkCounts,'')}
+      <div class="isec">Card Design</div>
+
+      <h3>Ink Color</h3>
+      ${barList(inkCounts,'')}
+
       <div style="height:16px"></div>
-      <h3>Cover Type</h3>${bars(coverCounts,'b')}
+      <h3>Cover Type</h3>
+      ${barList(coverCounts,'b')}
+
       <div style="height:16px"></div>
       <h3>Book Title Entered</h3>
       <div class="cs2">
         <div class="csp"><div class="cspn" style="color:var(--accent)">${fmt(titleEntered)}</div><div class="cspl">Entered (${pct(titleEntered,total)})</div></div>
-        <div class="csp"><div class="cspn" style="color:var(--muted)">${fmt(titleNotEntered)}</div><div class="cspl">Skipped (${pct(titleNotEntered,total)})</div></div>
+        <div class="csp"><div class="cspn" style="color:var(--muted)">${fmt(total-titleEntered)}</div><div class="cspl">Skipped (${pct(total-titleEntered,total)})</div></div>
       </div>
-    </div>
-    <div class="box">
-      <h3>OS Breakdown</h3>${bars(osCounts,'g')}
-      <div style="height:16px"></div>
+
+      <div style="height:8px"></div>
       <h3>Background Used</h3>
       <div class="cs2">
         <div class="csp"><div class="cspn" style="color:var(--green)">${fmt(bgUsed)}</div><div class="cspl">Used (${pct(bgUsed,total)})</div></div>
-        <div class="csp"><div class="cspn" style="color:var(--muted)">${fmt(bgNotUsed)}</div><div class="cspl">Not Used (${pct(bgNotUsed,total)})</div></div>
+        <div class="csp"><div class="cspn" style="color:var(--muted)">${fmt(total-bgUsed)}</div><div class="cspl">Not Used (${pct(total-bgUsed,total)})</div></div>
       </div>
     </div>
+
+    <!-- COLUMN 2: How They Used It -->
     <div class="box">
+      <div class="isec">How They Used It</div>
+
+      <h3>Percent Complete Method</h3>
+      <div class="cs2">
+        <div class="csp"><div class="cspn" style="color:var(--blue)">${fmt(calcUsed)}</div><div class="cspl">Used Calculator (${pct(calcUsed,total)})</div></div>
+        <div class="csp"><div class="cspn" style="color:var(--muted)">${fmt(total-calcUsed)}</div><div class="cspl">Typed % Directly (${pct(total-calcUsed,total)})</div></div>
+      </div>
+
+      <div style="height:16px"></div>
       <h3>Custom 3rd Stat <span style="font-weight:400;text-transform:none;letter-spacing:0">(since launch)</span></h3>
       <div class="cs2">
         <div class="csp"><div class="cspn" style="color:var(--accent)">${fmt(customUsed)}</div><div class="cspl">Used (${pct(customUsed,customTotal)})</div></div>
         <div class="csp"><div class="cspn" style="color:var(--muted)">${fmt(customNotUsed)}</div><div class="cspl">Not Used (${pct(customNotUsed,customTotal)})</div></div>
       </div>
-      <div style="height:12px"></div>
-      ${Object.keys(customStats).length ? bars(customStats,'y') : '<p style="color:var(--muted);font-size:.83rem">No labels yet</p>'}
+
+      ${top5Custom.length ? `
+      <div style="height:8px"></div>
+      <div class="bl">
+        ${top5Custom.map(([k,v]) => {
+          const maxV = top5Custom[0][1]||1;
+          return `<div class="bi">
+            <div class="br"><span class="blb">${esc(k)}</span><span class="brc">${fmt(v)}</span></div>
+            <div class="bt"><div class="bf y" style="width:${(v/maxV*100).toFixed(0)}%"></div></div>
+          </div>`;
+        }).join('')}
+      </div>
+      ${restCustom.length ? `
+      <div style="height:10px"></div>
+      <div class="ball">${restCustom.map(([k])=>`<span class="btag">${esc(k)}</span>`).join('')}</div>
+      ` : ''}
+      ` : '<p style="color:var(--muted);font-size:.83rem;margin-top:8px">No custom stat labels yet</p>'}
+    </div>
+
+    <!-- COLUMN 3: Engagement -->
+    <div class="box">
+      <div class="isec">Engagement</div>
+
+      <h3>OS Breakdown</h3>
+      ${barList(osCounts,'g')}
+
+      <div style="height:16px"></div>
+      <h3>Email Capture <span style="font-weight:400;text-transform:none;letter-spacing:0">(GA4 — all time)</span></h3>
+      <div style="display:flex;flex-direction:column;gap:0">
+        ${statRow('Saw Prompt', fmt(emailShown), 'modal displayed')}
+        ${statRow('Submitted Email', fmt(emailSignup) + ' <span style="color:var(--muted);font-weight:500;font-size:.75rem">(' + pct(emailSignup,emailShown) + ')</span>', 'of those who saw it')}
+        ${statRow('Skipped', fmt(emailSkipped) + ' <span style="color:var(--muted);font-weight:500;font-size:.75rem">(' + pct(emailSkipped,emailShown) + ')</span>', 'of those who saw it')}
+        ${statRow('Opted In', fmt(emailOptIn) + ' <span style="color:var(--muted);font-weight:500;font-size:.75rem">(' + pct(emailOptIn,emailTotal) + ')</span>', 'of emails submitted')}
+        ${statRow('Opted Out', fmt(emailOptOut) + ' <span style="color:var(--muted);font-weight:500;font-size:.75rem">(' + pct(emailOptOut,emailTotal) + ')</span>', 'of emails submitted')}
+      </div>
+
+      <div style="height:16px"></div>
+      <h3>Other Interactions <span style="font-weight:400;text-transform:none;letter-spacing:0">(GA4 — all time)</span></h3>
+      <div style="display:flex;flex-direction:column;gap:0">
+        ${statRow('Help Tab Opened', fmt(evGet('ss_help_tab')))}
+        ${statRow('Shawn Life Clicks', fmt(evGet('ss_shawnlife_click')))}
+      </div>
     </div>`;
 }
 
 // ============================================================ BOOKS TAB
 function renderBooks() {
   if (!RAW) return;
-  // Count from ALL rows (not filtered) for the all-time book list
   const bookCounts = {};
   RAW.rows.forEach(r => {
     if (String(r[C.HASTITLE]).toLowerCase()==='true' && r[C.TITLE]) {
@@ -999,10 +942,11 @@ function exportReport() {
     'Avg Pages/Session: '+s.avgPages, 'Median Pages: '+s.medianPages,
     'Avg Duration: '+s.avgMins+' min', 'Median Duration: '+s.medianMins+' min',''
   ];
-  if (EV) lines.push('=== EMAIL FUNNEL ===',
+  if (EV) lines.push('=== EMAIL ===',
     'Saw Prompt: '+fmt(EV.ss_email_modal_shown||0),
     'Submitted: '+fmt(EV.ss_email_signup||0),
-    'Opted In: '+fmt(EV.ss_email_opted_in||0),
+    'Opted In: '+fmt(EV.email_opted_in||0),
+    'Opted Out: '+fmt(EV.email_opted_out||0),
     'Skipped: '+fmt(EV.ss_email_skipped||0),''
   );
   if (RAW) {
