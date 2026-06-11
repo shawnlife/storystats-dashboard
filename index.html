@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" type="image/png" href="https://cdn.shopify.com/s/files/1/1194/9120/files/StoryStats_App_Icon_19f48f42-a903-4ed7-be88-9310ef68c54f.png?v=1778077707">
 <title>StoryStats Dashboard</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -196,6 +195,13 @@ header h1{font-size:1rem;font-weight:800;}header h1 span{color:var(--accent);}
     <input type="date" id="d-to" style="display:none">
     <button class="btn btn-p" onclick="applyFilter()">Apply</button>
     <button class="btn btn-o" onclick="resetFilters()">Reset</button>
+    <span style="color:var(--border);font-size:.9rem;margin:0 2px">|</span>
+    <label>Mode:</label>
+    <div class="tgg" style="margin-bottom:0">
+      <button id="mf-all" class="on" onclick="setMode('all')">All</button>
+      <button id="mf-physical" onclick="setMode('physical')">Physical</button>
+      <button id="mf-audiobook" onclick="setMode('audiobook')">Audiobook</button>
+    </div>
     <span id="filter-info" style="color:var(--muted);font-size:.78rem;font-weight:600"></span>
   </div>
 
@@ -298,14 +304,15 @@ const PW = 'Meridian47Foxglove';
 
 // State
 let RAW = null, GA = null, EV = null, ROWS = [];
-let isDark = false, gran = 'month';
+let isDark = false, gran = 'month', modeFilter = 'all';
 let sortCol = 'activeUsers', sortDir = 'desc';
 const CH = {};
 
 // Column indices
 const C = {TS:0,DATE:1,TIME:2,PAGES:3,HRS:4,MINS:5,TMINS:6,PCT:7,TPAGES:8,
            FIN:9,TITLE:10,HASTITLE:11,INK:12,COVER:13,USEBG:14,BG:15,
-           DEVICE:16,OS:17,SRC:18,RET:19,CSTAT:20,CLABEL:21,CVAL:22};
+           DEVICE:16,OS:17,SRC:18,RET:19,CSTAT:20,CLABEL:21,CVAL:22,
+           MODE:23,UNIT:24};
 
 // ============================================================ AUTH
 function checkPw() {
@@ -403,10 +410,11 @@ function applyFilter() {
   const { from, to } = getDateRange();
   const v = document.getElementById('period').value;
 
+  let dateFiltered;
   if (!from && v === 'all') {
-    ROWS = RAW.rows;
+    dateFiltered = RAW.rows;
   } else {
-    ROWS = RAW.rows.filter(row => {
+    dateFiltered = RAW.rows.filter(row => {
       const d = parseRowDate(row);
       if (!d) return false;
       if (from && d < from) return false;
@@ -414,8 +422,18 @@ function applyFilter() {
       return true;
     });
   }
+  // Apply mode filter
+  if (modeFilter === 'all') {
+    ROWS = dateFiltered;
+  } else {
+    ROWS = dateFiltered.filter(row => {
+      const m = String(row[C.MODE] || 'physical').toLowerCase();
+      return m === modeFilter;
+    });
+  }
 
-  const info = v === 'all' ? '' : `${ROWS.length.toLocaleString()} sessions in period`;
+  const modeLabel = modeFilter === 'all' ? '' : ' · ' + modeFilter + ' only';
+  const info = (v === 'all' && modeFilter === 'all') ? '' : `${ROWS.length.toLocaleString()} sessions${modeLabel}`;
   document.getElementById('filter-info').textContent = info;
 
   renderCards();
@@ -449,27 +467,61 @@ function calcStats(rows) {
 
 function renderCards() {
   const s = calcStats(ROWS);
-  const rawTotal = RAW ? RAW.rows.length : 0;
-  const dedupedTotal = s.totalSessions;
-  const downloads = EV ? (EV.ss_download || 0) : 0;
-  const dupePct = downloads > 0 ? ((downloads - dedupedTotal) / downloads * 100).toFixed(1) : 0;
-  const estBooks = Math.round(s.totalPages / 300);
-  const totalDays = Math.round(s.totalHours / 24 * 10) / 10;
 
-  const cards = [
-    {
-      l: 'Sessions',
-      v: fmt(dedupedTotal), c: 'a',
-      sub: downloads > 0
-        ? fmt(downloads) + ' downloads · ' + dupePct + '% deduped'
-        : fmt(rawTotal) + ' raw · ' + fmt(rawTotal - dedupedTotal) + ' dupes removed'
-    },
-    { l:'Pages Read',         v:fmt(s.totalPages),         c:'b', sub:'≈ '+fmt(estBooks)+' books (avg 300 pages)' },
-    { l:'Time Reading',       v:fmt(s.totalHours)+' hrs',  c:'g', sub:totalDays+' days of reading' },
-    { l:'Books Finished',     v:fmt(s.booksFinished),      c:'a', sub:'marked 100% complete' },
-    { l:'Avg / Median Pages', v:fmt(s.avgPages),           c:'t', sub:'median: '+fmt(s.medianPages)+' pages' },
-    { l:'Avg / Median Duration', v:s.avgMins+' min',       c:'t', sub:'median: '+s.medianMins+' min' },
-  ];
+  // Mode-aware counts from full date-filtered set (before mode filter) for downloads context
+  const allDateRows = modeFilter === 'all' ? (RAW ? RAW.rows : []) : (RAW ? RAW.rows : []);
+  const downloads = EV ? (EV.ss_download || 0) : 0;
+  const dedupedTotal = s.totalSessions;
+  const dupePct = downloads > 0 ? ((downloads - (RAW ? RAW.rows.length : 0)) / downloads * 100 * -1).toFixed(1) : 0;
+
+  // Physical-only stats
+  const physRows = ROWS.filter(r => String(r[C.MODE]||'physical').toLowerCase() !== 'audiobook');
+  const abRows   = ROWS.filter(r => String(r[C.MODE]||'physical').toLowerCase() === 'audiobook');
+  const physStats = calcStats(physRows);
+  const abStats   = calcStats(abRows);
+
+  const totalDays = Math.round(s.totalHours / 24 * 10) / 10;
+  const estBooks  = Math.round(physStats.totalPages / 300);
+
+  // Dedupe pct based on all rows vs clean rows
+  const rawAllCount = RAW ? RAW.rows.length : 0;
+  const dedupePct2 = downloads > 0 ? ((downloads - rawAllCount) / downloads * 100).toFixed(1) : '—';
+
+  let cards = [];
+
+  if (modeFilter === 'all') {
+    cards = [
+      { l:'Sessions',             v:fmt(dedupedTotal),            c:'a', sub: downloads > 0 ? fmt(downloads)+' downloads · '+dedupePct2+'% deduped' : fmt(rawAllCount)+' raw' },
+      { l:'Physical Sessions',    v:fmt(physRows.length),         c:'b', sub: pct(physRows.length, dedupedTotal)+' of total' },
+      { l:'Audiobook Sessions',   v:fmt(abRows.length),           c:'p', sub: pct(abRows.length, dedupedTotal)+' of total' },
+      { l:'Pages Read (Physical)',v:fmt(physStats.totalPages),     c:'b', sub:'≈ '+fmt(estBooks)+' books · avg '+fmt(physStats.avgPages)+' pages' },
+      { l:'Time Listening (AB)',  v:fmt(abStats.totalHours)+' hrs',c:'p', sub:'audiobook listening time' },
+      { l:'Total Time Reading',   v:fmt(s.totalHours)+' hrs',     c:'g', sub:totalDays+' days across all modes' },
+      { l:'Books Finished',       v:fmt(s.booksFinished),         c:'a', sub:'marked 100% complete' },
+      { l:'Avg Duration',         v:s.avgMins+' min',             c:'t', sub:'median: '+s.medianMins+' min · all modes' },
+    ];
+  } else if (modeFilter === 'physical') {
+    const estB = Math.round(physStats.totalPages / 300);
+    const days = Math.round(physStats.totalHours / 24 * 10) / 10;
+    cards = [
+      { l:'Physical Sessions',    v:fmt(dedupedTotal),            c:'b', sub:'period total' },
+      { l:'Pages Read',           v:fmt(physStats.totalPages),    c:'b', sub:'≈ '+fmt(estB)+' books (avg 300 pages)' },
+      { l:'Time Reading',         v:fmt(physStats.totalHours)+' hrs', c:'g', sub:days+' days of reading' },
+      { l:'Books Finished',       v:fmt(physStats.booksFinished), c:'a', sub:'marked 100% complete' },
+      { l:'Avg / Median Pages',   v:fmt(physStats.avgPages),      c:'t', sub:'median: '+fmt(physStats.medianPages)+' pages' },
+      { l:'Avg / Median Duration',v:physStats.avgMins+' min',     c:'t', sub:'median: '+physStats.medianMins+' min' },
+    ];
+  } else {
+    // audiobook
+    const days = Math.round(abStats.totalHours / 24 * 10) / 10;
+    cards = [
+      { l:'Audiobook Sessions',   v:fmt(dedupedTotal),            c:'p', sub:'period total' },
+      { l:'Time Listening',       v:fmt(abStats.totalHours)+' hrs',c:'p', sub:days+' days of listening' },
+      { l:'Books Finished',       v:fmt(abStats.booksFinished),   c:'a', sub:'marked 100% complete' },
+      { l:'Avg / Median Duration',v:abStats.avgMins+' min',       c:'t', sub:'median: '+abStats.medianMins+' min' },
+    ];
+  }
+
   document.getElementById('stat-cards').innerHTML = cards.map(c=>
     `<div class="card"><div class="cl">${c.l}</div><div class="cv ${c.c}">${c.v}</div><div class="cs">${c.sub}</div></div>`
   ).join('');
@@ -684,9 +736,12 @@ function renderInteractions() {
   if (!RAW) return;
   const total = ROWS.length;
 
-  // -- Custom stat (since launch row only) --
+  // -- Custom stat (since launch, split by mode) --
   const csrStart = (RAW.customStatStartRow || 889) - 1;
-  const rowsForCustom = RAW.rows.slice(csrStart);
+  const rowsForCustomBase = RAW.rows.slice(csrStart);
+  // Apply mode filter to custom stat rows too
+  const rowsForCustom = modeFilter === 'all' ? rowsForCustomBase
+    : rowsForCustomBase.filter(r => String(r[C.MODE]||'physical').toLowerCase() === modeFilter);
   const customUsed    = rowsForCustom.filter(r => String(r[C.CSTAT]).toLowerCase()==='true').length;
   const customNotUsed = rowsForCustom.length - customUsed;
   const customTotal   = rowsForCustom.length;
@@ -700,6 +755,12 @@ function renderInteractions() {
   const customEntries = Object.entries(customCounts).sort((a,b)=>b[1]-a[1]);
   const top5Custom    = customEntries.slice(0,5);
   const restCustom    = customEntries.slice(5);
+
+  // -- Unit split (audiobook only) --
+  const abRowsAll = RAW.rows.filter(r => String(r[C.MODE]||'physical').toLowerCase()==='audiobook');
+  const unitMi = abRowsAll.filter(r => String(r[C.UNIT]||'').toLowerCase()==='mi').length;
+  const unitKm = abRowsAll.filter(r => String(r[C.UNIT]||'').toLowerCase()==='km').length;
+  const unitTotal = unitMi + unitKm;
 
   // -- Card design counts from ROWS --
   const inkCounts={}, coverCounts={};
@@ -841,6 +902,12 @@ function renderInteractions() {
       </div>
 
       <div style="height:16px"></div>
+      <h3>Distance Unit Preference <span style="font-weight:400;text-transform:none;letter-spacing:0">(audiobook rows — all time)</span></h3>
+      <div class="cs2">
+        <div class="csp"><div class="cspn" style="color:var(--blue)">${fmt(unitMi)}</div><div class="cspl">Miles (${pct(unitMi,unitTotal)})</div></div>
+        <div class="csp"><div class="cspn" style="color:var(--green)">${fmt(unitKm)}</div><div class="cspl">Kilometers (${pct(unitKm,unitTotal)})</div></div>
+      </div>
+      <div style="height:16px"></div>
       <h3>Other Interactions <span style="font-weight:400;text-transform:none;letter-spacing:0">(GA4 — all time)</span></h3>
       <div style="display:flex;flex-direction:column;gap:0">
         ${statRow('Help Tab Opened', fmt(evGet('ss_help_tab')))}
@@ -930,6 +997,13 @@ function onPeriod() {
   document.getElementById('d-to').style.display=c?'inline-block':'none';
 }
 function resetFilters() { document.getElementById('period').value='all'; onPeriod(); applyFilter(); }
+function setMode(m) {
+  modeFilter = m;
+  ['all','physical','audiobook'].forEach(v => {
+    document.getElementById('mf-'+v).classList.toggle('on', v===m);
+  });
+  applyFilter();
+}
 
 // ============================================================ EXPORT
 function exportReport() {
