@@ -1056,5 +1056,8 @@ function fmtSecs(s){ return s>=60?Math.floor(s/60)+'m '+(s%60)+'s':s+'s'; }
 function esc(s)    { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function median(a) { const s=[...a].sort((x,y)=>x-y),m=Math.floor(s.length/2); return s.length%2?s[m]:Math.round((s[m-1]+s[m])/2); }
 </script>
+<footer style="text-align:center;padding:32px 16px 24px;color:var(--muted);font-size:0.75rem;">
+  Tool made using AI vibe-coding by <a href="https://shawnlife.com" target="_blank" rel="noopener" style="color:var(--muted);text-decoration:underline;">ShawnLife</a>
+</footer>
 </body>
 </html>
