@@ -322,7 +322,12 @@ const CH = {};
 const C = {TS:0,DATE:1,TIME:2,PAGES:3,HRS:4,MINS:5,TMINS:6,PCT:7,TPAGES:8,
            FIN:9,TITLE:10,HASTITLE:11,INK:12,COVER:13,USEBG:14,BG:15,
            DEVICE:16,OS:17,SRC:18,RET:19,CSTAT:20,CLABEL:21,CVAL:22,
-           MODE:23,UNIT:24};
+           MODE:23,UNIT:24,ORIENT:26};
+// Note: index 25 (supersedes_ts) is skipped -- dedup already happened
+// server-side, the dashboard never needs it. Orientation was added
+// 2026-07-26; rows submitted before that deploy have '' here, not
+// "vertical" -- shown as its own Unknown bucket below rather than assumed,
+// since assuming would undercount real horizontal usage during the gap.
 
 // ============================================================ AUTH
 async function checkPw() {
@@ -807,6 +812,7 @@ function renderInteractions() {
   // -- Card design counts from ROWS --
   const inkCounts={}, coverCounts={};
   let titleEntered=0, bgUsed=0, calcUsed=0;
+  const orientCounts={}; let orientUnknown=0;
   ROWS.forEach(r => {
     const ink = String(r[C.INK]).trim().toLowerCase();
     if (ink && ink!=='undefined') inkCounts[ink]=(inkCounts[ink]||0)+1;
@@ -817,7 +823,13 @@ function renderInteractions() {
     // calculator used = total_pages column is populated
     const tp = r[C.TPAGES];
     if (tp !== '' && tp !== null && tp !== undefined && !isNaN(parseFloat(tp))) calcUsed++;
+    // Orientation: rows from before the tracking deploy have '' here, not
+    // "vertical" -- counted separately as Unknown, never assumed either way.
+    const orient = String(r[C.ORIENT]||'').trim().toLowerCase();
+    if (orient==='vertical' || orient==='horizontal') orientCounts[orient]=(orientCounts[orient]||0)+1;
+    else orientUnknown++;
   });
+  const orientKnownTotal = (orientCounts.vertical||0) + (orientCounts.horizontal||0);
 
   // -- OS from ROWS --
   const osCounts = {};
@@ -889,6 +901,14 @@ function renderInteractions() {
         <div class="csp"><div class="cspn" style="color:var(--green)">${fmt(bgUsed)}</div><div class="cspl">Used (${pct(bgUsed,total)})</div></div>
         <div class="csp"><div class="cspn" style="color:var(--muted)">${fmt(total-bgUsed)}</div><div class="cspl">Not Used (${pct(total-bgUsed,total)})</div></div>
       </div>
+
+      <div style="height:16px"></div>
+      <h3>Orientation <span style="font-weight:400;text-transform:none;letter-spacing:0">(since 7/26)</span></h3>
+      <div class="cs2">
+        <div class="csp"><div class="cspn" style="color:var(--accent)">${fmt(orientCounts.vertical||0)}</div><div class="cspl">Vertical (${pct(orientCounts.vertical||0,orientKnownTotal)})</div></div>
+        <div class="csp"><div class="cspn" style="color:var(--blue)">${fmt(orientCounts.horizontal||0)}</div><div class="cspl">Horizontal (${pct(orientCounts.horizontal||0,orientKnownTotal)})</div></div>
+      </div>
+      ${orientUnknown>0 ? `<div class="stat-sub" style="margin-top:6px">${fmt(orientUnknown)} sessions from before orientation tracking was live -- not counted above</div>` : ''}
     </div>
 
     <!-- COLUMN 2: How They Used It -->
