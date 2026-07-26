@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>StoryStats Dashboard</title>
 <link rel="icon" type="image/png" href="https://cdn.shopify.com/s/files/1/1194/9120/files/StoryStats_App_Icon_19f48f42-a903-4ed7-be88-9310ef68c54f.png?v=1778077707">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js" defer></script>
 <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -301,7 +301,16 @@ header h1{font-size:1rem;font-weight:800;}header h1 span{color:var(--accent);}
 
 <script>
 const ASURL = 'https://script.google.com/macros/s/AKfycbwac7tO8AC78x6RREQ0vWlHtt_qGNw5XqF8foiusVWmS7Wxdo3rzFiu6FacG8rSzkiDxw/exec';
-const PW = 'Meridian47Foxglove';
+// SHA-256 hash of the password, not the plaintext value itself — anyone who
+// views source no longer sees the password directly. Bookmark/share links
+// (#password in the URL) still work exactly as before; only the JS-source
+// exposure is reduced. This is not real server-side auth — anyone who already
+// knows the password (or brute-forces this hash) can still get in.
+const PW_HASH = 'e4e1cf4740408709b0f5ef5c15d9b471f46cac15129bcd6adaf606de88c87ba6';
+async function sha256Hex(text) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
 
 // State
 let RAW = null, GA = null, EV = null, ROWS = [];
@@ -316,8 +325,9 @@ const C = {TS:0,DATE:1,TIME:2,PAGES:3,HRS:4,MINS:5,TMINS:6,PCT:7,TPAGES:8,
            MODE:23,UNIT:24};
 
 // ============================================================ AUTH
-function checkPw() {
-  if (document.getElementById('pw').value === PW) { window.location.hash = PW; unlock(); }
+async function checkPw() {
+  const typed = document.getElementById('pw').value;
+  if (await sha256Hex(typed) === PW_HASH) { window.location.hash = typed; unlock(); }
   else document.getElementById('auth-err').style.display = 'block';
 }
 document.getElementById('pw').addEventListener('keydown', e => { if (e.key==='Enter') checkPw(); });
@@ -326,7 +336,10 @@ function unlock() {
   document.getElementById('main').style.display = 'block';
   loadAll();
 }
-if (window.location.hash.replace('#','') === PW) unlock();
+(async () => {
+  const hashFrag = window.location.hash.replace('#','');
+  if (hashFrag && await sha256Hex(hashFrag) === PW_HASH) unlock();
+})();
 
 // ============================================================ THEME
 function toggleTheme() {
@@ -346,9 +359,37 @@ async function fetchJ(action) {
   } catch(e) { console.error('Fetch error', action, e); return { error: String(e) }; }
 }
 
-async function loadAll() {
+// Underlying data only changes nightly (3-4am cron) or on an explicit Refresh
+// click, so a short browser cache avoids re-fetching the whole dataset (and
+// burning Apps Script quota) every time the dashboard is reopened.
+const CACHE_KEY = 'storystats_dashboard_cache_v1';
+const CACHE_TTL_MS = 15 * 60 * 1000;
+
+function readCache() {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return null;
+    const c = JSON.parse(raw);
+    if (!c || (Date.now() - c.ts) > CACHE_TTL_MS) return null;
+    return c;
+  } catch(e) { return null; }
+}
+function writeCache(RAW, GA, EV) {
+  try { localStorage.setItem(CACHE_KEY, JSON.stringify({ts: Date.now(), RAW, GA, EV})); }
+  catch(e) { /* quota exceeded or unavailable — just skip caching */ }
+}
+
+async function loadAll(opts) {
+  const forceFetch = opts && opts.forceFetch;
   document.getElementById('stat-cards').innerHTML = '<div class="ld"><div class="sp"></div></div>';
-  [RAW, GA, EV] = await Promise.all([fetchJ('rows'), fetchJ('ga4'), fetchJ('events')]);
+
+  const cached = forceFetch ? null : readCache();
+  if (cached) {
+    [RAW, GA, EV] = [cached.RAW, cached.GA, cached.EV];
+  } else {
+    [RAW, GA, EV] = await Promise.all([fetchJ('rows'), fetchJ('ga4'), fetchJ('events')]);
+    if (RAW && !RAW.error && GA && !GA.error) writeCache(RAW, GA, EV);
+  }
 
   if (RAW && !RAW.error) {
     if (RAW.lastUpdated) {
@@ -368,7 +409,7 @@ async function doRefresh() {
   try {
     await fetchJ('refresh'); // triggers dedup + GA4 pull server-side
     btn.textContent = '↻ Reloading...';
-    await loadAll();
+    await loadAll({forceFetch: true});
     btn.textContent = '↻ Done!';
     setTimeout(() => { btn.textContent = '↻ Refresh'; btn.disabled = false; }, 2000);
   } catch(e) {
