@@ -331,9 +331,16 @@ const C = {TS:0,DATE:1,TIME:2,PAGES:3,HRS:4,MINS:5,TMINS:6,PCT:7,TPAGES:8,
 // since assuming would undercount real horizontal usage during the gap.
 
 // ============================================================ AUTH
+// AUTH_TOKEN is sent to the Apps Script with every data request so the
+// backend can verify it server-side (see doGet's auth check) instead of
+// trusting the client to only ask when it should. Without this, anyone who
+// found ASURL (visible right above) could pull the raw data with no password
+// at all -- the UI gate alone never stopped that.
+let AUTH_TOKEN = null;
 async function checkPw() {
   const typed = document.getElementById('pw').value;
-  if (await sha256Hex(typed) === PW_HASH) { window.location.hash = typed; unlock(); }
+  const hash = await sha256Hex(typed);
+  if (hash === PW_HASH) { AUTH_TOKEN = hash; window.location.hash = typed; unlock(); }
   else document.getElementById('auth-err').style.display = 'block';
 }
 document.getElementById('pw').addEventListener('keydown', e => { if (e.key==='Enter') checkPw(); });
@@ -344,7 +351,10 @@ function unlock() {
 }
 (async () => {
   const hashFrag = window.location.hash.replace('#','');
-  if (hashFrag && await sha256Hex(hashFrag) === PW_HASH) unlock();
+  if (hashFrag) {
+    const hash = await sha256Hex(hashFrag);
+    if (hash === PW_HASH) { AUTH_TOKEN = hash; unlock(); }
+  }
 })();
 
 // ============================================================ THEME
@@ -359,7 +369,7 @@ function toggleTheme() {
 // ============================================================ DATA LOADING
 async function fetchJ(action) {
   try {
-    const r = await fetch(ASURL + '?action=' + action);
+    const r = await fetch(ASURL + '?action=' + action + '&auth=' + encodeURIComponent(AUTH_TOKEN||''));
     const t = await r.text();
     return JSON.parse(t);
   } catch(e) { console.error('Fetch error', action, e); return { error: String(e) }; }
