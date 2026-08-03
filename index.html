@@ -864,14 +864,6 @@ function renderInteractions() {
   // -- GA4 event counts (all-time, from Events Cache) --
   const evGet = key => EV ? (EV[key] || 0) : 0;
 
-  function miniBar(label, count, total2, cls='') {
-    const max = total2 || 1;
-    return `<div class="bi">
-      <div class="br"><span class="blb">${cap(label)}</span><span class="brc">${fmt(count)} (${pct(count,total2)})</span></div>
-      <div class="bt"><div class="bf ${cls}" style="width:${(count/max*100).toFixed(0)}%"></div></div>
-    </div>`;
-  }
-
   function barList(obj, cls='', maxRows=20) {
     const entries = Object.entries(obj).sort((a,b)=>b[1]-a[1]).slice(0,maxRows);
     const maxVal = entries[0]?.[1]||1;
