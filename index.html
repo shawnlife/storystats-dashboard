@@ -985,6 +985,7 @@ function renderInteractions() {
       <div style="display:flex;flex-direction:column;gap:0">
         ${statRow('Help Tab Opened', fmt(evGet('ss_help_tab')))}
         ${statRow('Shawn Life Clicks', fmt(evGet('ss_shawnlife_click')))}
+        ${statRow('In-App Browser Popup Shown', fmt(evGet('ss_inapp_browser')), 'Instagram, Facebook, TikTok etc. (since v6.39)')}
       </div>
     </div>`;
 }
